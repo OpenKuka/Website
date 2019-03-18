@@ -1,0 +1,70 @@
+--- # StrCopy
+  name: StrCopy
+  description: Copy the contents of a string variable to another string variable.
+  parameters:
+    - name: strDest[]
+      pass: IN
+      type: CHAR[]
+      description: >-
+        The character string is copied to this string variable.
+        Since `strDest[]` is an array of type `CHAR`, individual characters and constants are not permissible.
+    - name: strSource[]
+      pass: IN
+      type: CHAR[]
+      description: >-
+        The contents of this string variable are copied.
+  return-type: BOOL
+  return-description: >-
+      Returns `true` if the copy was successfull. Returns `false` otherwise.
+  comments: |
+      The function `StrCopy()` can be used to copy the contents of a string variable to another string variable.
+  code-sample: |
+      DECL CHAR A[25], B[25]
+      DECL BOOL C
+      A[] = ""
+      B[] = "Example"
+      C   = StrCopy(A[], B[])
+      > A[] = "Example" and C = true
+
+--- # Set_KrlMsg
+  name: Set_KrlMsg
+  description: Generate a message.
+  parameters:
+    - name: type
+      pass: IN
+      type: EKrlMsgType
+      description: >-
+        Defines the type of the message to be generated (#notify, #state, #quit, #waiting).
+    - name: msg
+      pass: OUT
+      type: KrlMsg_T
+      description: >-
+        Structure defining the name, originator and message text
+    - name: params
+      pass: OUT
+      type: KrlMsgPar_T
+      description: >-
+        Structure containing the message parameters
+    - name: options
+      pass: OUT
+      type: KrlMsgOpt_T
+      description: >-
+        Structure containing the message reaction
+  return-type: BOOL
+  return-description: >-
+      Returns `true` if the copy was successfull. Returns `false` otherwise.
+  comments: |
+      The function Set_KrlMsg() generates a message. 
+      This means that the message is transferred to the message buffer and displayed from there in the message window.
+      
+      Exceptions:
+
+      * Notification messages are displayed in the message window by mean sof Set_KrlMsg(). They are not managed in the message buffer, however (“fire and forget” principle).
+      * To generate dialog messages, the function Set_KrlDlg() must be used.      
+  code-sample: |
+      DECL CHAR A[25], B[25]
+      DECL BOOL C
+      A[] = ""
+      B[] = "Example"
+      C   = StrCopy(A[], B[])
+      > A[] = "Example" and C = true

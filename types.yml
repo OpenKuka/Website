@@ -1,0 +1,146 @@
+# ENUMS
+
+--- # PRO_MODE
+  name: PRO_MODE
+  data-type: ENUM
+  description: Program run modes
+  values:
+    - name: ISTEP
+      description: 'Incremental Step : block-by-blockprocessing with a stop after each instruction (without advance run processing).'
+    - name: PSTEP
+      description: 'Program Step: complete processing of subprograms (without advance run processing).'
+    - name: MSTEP
+      description: 'Motion Step: step-by-step processing with a stop after each motion instruction (without advance run processing).'
+    - name: CSTEP
+      description: 'Continuous Step: Step-by-step processing with a stop after each motion instruction (with advance run processing).'
+    - name: GO
+      description: 'Continuous execution to the end of the program.'
+    - name: BSTEP
+      description: 'Back Step: Continuous execution backwards to the start of the program.'
+--- # PRO_STATE
+  name: PRO_STATE
+  data-type: ENUM
+  description: Process states
+  comments: |
+  values:
+    - name: P_FREE
+      description: Program not selected
+    - name: P_RESET
+      description: Program reset
+    - name: P_ACTIVE
+      description: Program active
+    - name: P_STOP
+      description: Program stopped
+    - name: P_END
+      description: End of program reached 
+
+
+# STRUCTS
+    
+--- # CP
+  name: CP
+  data-type: STRUC
+  description: Speed/Acceleration data structure
+  fields:
+    - name: CP
+      data-type: REAL
+    - name: ORI1
+      data-type: REAL
+    - name: ORI2
+      data-type: REAL
+
+--- # PRO_IP
+  name: PRO_IP
+  data-type: STRUC
+  description: Process pointer data structure 
+  fields:
+    - name: I_EXECUTED
+      data-type: BOOL
+      description: "`true` if the instruction is executed. `false` otherwise."
+    - name: NAME[]
+      data-type: CHAR[32]
+      description: Name of the block in the `ADVANCE` run
+    - name: NAME_C[]
+      data-type: CHAR[32]
+      description: Name of the block in the `MAIN` run
+    - name: P_ARRIVED
+      data-type: INT
+      description: Path status for the programmed point
+    - name: P_NAME[]
+      data-type: CHAR[24]
+      description: Name or aggregate of the end or auxiliary point
+    - name: SNR
+      data-type: INT
+      description: Block number in the `ADVANCE` run
+    - name: SNR_C
+      data-type: INT
+      description: Block number in the `MAIN` run
+
+
+
+# MESSAGE
+
+--- # EKrlMsgType
+  name: EKrlMsgType
+  data-type: ENUM
+  description: Message types
+  comments: |
+  values:
+    - name: NOTIFY
+      description: Notification message
+    - name: STATE
+      description: Status message
+    - name: QUIT
+      description: Acknowledgment message
+    - name: WAITING
+      description: Wait message
+    - name: DIALOG
+      description: End of program reached
+--- # KrlMsgParType_T
+  name: KrlMsgParType_T
+  data-type: ENUM
+  description: Message parameter types
+  comments: |
+  values:
+    - name: VALUE
+      description: The parameter is inserted into the message text as specified in text, int, real or bool.
+    - name: KEY
+      description: The parameter is a key that must be searched for in the message database.
+    - name: EMPTY
+      description: The parameter is empty.
+    
+--- # KrlMsg_T
+  name: KrlMsg_T
+  data-type: STRUC
+  description: Message data structure
+  fields:
+    - name: Modul[]
+      data-type: CHAR[24]
+      description: Originator displayed in the message window.
+    - name: Nr
+      data-type: INT
+      description: Message number. Message numbers may be used more than once.
+    - name: Msg_Txt[]
+      data-type: CHAR[80]
+      description: Message text (or key for a message database).
+--- # KrlMsgPar_T
+  name: KrlMsgPar_T
+  data-type: STRUC
+  description: Message parameter data structure
+  fields:
+    - name: Par_Type
+      data-type: KrlMsgParType_T
+      description: Type of parameter.
+    - name: Par_Txt[]
+      data-type: CHAR[26]
+      description: Text of the parameter (or key for a message database).
+    - name: Par_Int
+      data-type: INT
+      description: This can be used to fill the placeholder with an integer value. It can only be used in conjunction with type=#value.
+    - name: Par_Real
+      data-type: REAL
+      description: This can be used to fill the placeholder with a real value. It can only be used in conjunction with type=#value.
+    - name: Par_Bool
+      data-type: BOOL
+      description: This can be used to fill the placeholder with a Boolean value. It can only be used in conjunction with type=#value.
+    

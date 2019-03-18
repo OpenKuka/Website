@@ -1,0 +1,36 @@
+site_name: OpenKuka
+site_dir: '../openkuka.github.io'
+theme:
+  name: 'material'
+  palette:
+    primary: 'deep orange'
+    accent: 'indigo'
+  feature:
+    tabs: true
+  language: 'en'
+plugins:
+  - search
+  - macros
+nav:
+  - Home: index.md
+  - CrossComm: crosscomm.md
+  - KRL:
+    - System Variables: KRL/variables.md
+    - System Functions: KRL/functions.md
+    - System Types: KRL/types.md
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.codehilite:
+      linenums: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.extra
+  - toc:
+      permalink: true
+# extra_javascript:
+#   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'

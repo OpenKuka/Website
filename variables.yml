@@ -1,0 +1,159 @@
+--- # $ACC
+  name: $ACC
+  data-type: STRUC
+  type: CP
+  description: Accelerations in the `ADVANCE` run
+  fields:
+    - name: CP
+      data-type: REAL
+      unit: m/s^2^
+      description: CP acceleration in the advance run
+    - name: ORI1
+      data-type: REAL
+      unit: °/s^2^
+      description: Swivel acceleration in the advance run
+    - name: ORI2
+      data-type: REAL
+      unit: °/s^2^
+      description: Rotational acceleration in the advance run
+--- # $ACC_C
+  name: $ACC_C
+  data-type: STRUC
+  type: CP
+  description: Accelerations in the `MAIN` run
+  fields:
+    - name: CP
+      data-type: REAL
+      unit: m/s^2^
+      constraint : '> 0'
+      description: CP acceleration in the main run
+    - name: ORI1
+      data-type: REAL
+      unit: °/s^2^
+      description: Swivel acceleration in the main run
+    - name: ORI2
+      data-type: REAL
+      unit: °/s^2^
+      description: Rotational acceleration in the main run
+--- # $ACC_EXTAX[]
+  name: $ACC_EXTAX[]
+  data-type: INT[6]
+  unit: '%'
+  constraint: [0,100]
+  description: Acceleration of the external axes in the `ADVANCE` run
+--- # $ACC_CAR_STOP
+  name: $ACC_CAR_STOP
+  data-type: BOOL
+  constraint: [0,100]
+  description: The robot can be stopped if `$ACC_CAR_LIMIT` is exceeded
+  description-true: Stop reaction is activated.
+  description-false: Stop reaction is desactivated.
+  comments: |
+    Activates or deactivates the stop reaction when the value specified in `$ACC_CAR_LIMIT` is exceeded.
+    The values can only be modified by editing the machine data.
+--- # $ACT_BASE
+  name: $ACT_BASE
+  data-type: INT
+  constraint: '> 0'
+  unit: id
+  description: Number of the current `BASE` system
+
+--- # $OV_PRO
+  name: $OV_PRO
+  data-type: INT
+  constraint: [0, 100]
+  unit: '%'
+  description: Program override
+  comments: |
+    Program override is the velocity of the robot during program execution.
+
+    The program override is specified as a percentage of the programmed velocity.
+    In T1 mode, the maximum velocity is 250 mm/s, irrespective of the value that is set.
+--- # $PRO_MODE
+  name: $PRO_MODE
+  data-type: ENUM
+  type: PRO_MODE
+  description: Program run mode dependent on `$INTERPRETER`
+--- # $PRO_MODE0
+  name: $PRO_MODE0
+  data-type: ENUM
+  type: PRO_MODE
+  description: Program run mode of the `SUBMIT` interpreter
+--- # $PRO_MODE1
+  name: $PRO_MODE1
+  data-type: ENUM
+  type: PRO_MODE
+  description: Program run mode of the `ROBOT` interpreter
+--- # $PRO_STATE
+  name: $PRO_STATE
+  data-type: ENUM
+  type: PRO_STATE
+  description: Process state dependent on `$INTERPRETER`
+--- # $PRO_STATE0
+  name: $PRO_STATE0
+  data-type: ENUM # BOOL, INT, REAL, CHAR, STRING, ENUM, STRUC
+  type: PRO_STATE
+  description: Process state of the `SUBMIT` interpreter
+--- # $PRO_STATE1
+  name: $PRO_STATE1
+  data-type: ENUM # BOOL, INT, REAL, CHAR, STRING, ENUM, STRUC
+  type: PRO_STATE
+  description: Process state of the `ROBOT` interpreter
+--- # $PRO_NAME[]
+  name: $PRO_NAME[]
+  data-type: CHAR[24]
+  description: Process name dependent on `$INTERPRETER`
+--- # $PRO_NAME0[]
+  name: $PRO_NAME0[]
+  data-type: CHAR[24]
+  description: Process name of the `SUBMIT` interpreter
+--- # $PRO_NAME1[]
+  name: $PRO_NAME1[]
+  data-type: CHAR[24]
+  description: Process name of the `ROBOT` interpreter
+--- # $PRO_IP
+  name: $PRO_IP
+  data-type: STRUC
+  type: PRO_IP
+  description: Process pointer to current KRL process
+  fields:
+    - name: I_EXECUTED
+      data-type: BOOL
+      description: "`true` if the instruction is executed. `false` otherwise."
+    - name: NAME[]
+      data-type: CHAR[32]
+      description: Name of the block in the `ADVANCE` run
+    - name: NAME_C[]
+      data-type: CHAR[32]
+      description: Name of the block in the `MAIN` run
+    - name: P_ARRIVED
+      data-type: INT
+      description: Path status for the programmed point
+    - name: P_NAME[]
+      data-type: CHAR[24]
+      description: Name or aggregate of the end or auxiliary point
+    - name: SNR
+      data-type: INT
+      description: Block number in the `ADVANCE` run
+    - name: SNR_C
+      data-type: INT
+      description: Block number in the `MAIN` run
+--- # $VEL
+  name: $VEL
+  data-type: STRUC
+  type: CP
+  description: Velocities in the advance run
+  fields:
+    - name: CP
+      data-type: REAL
+      unit: m/s
+      constraint : '> 0'
+      description: CP velocity in the advance run
+    - name: ORI1
+      data-type: REAL
+      unit: °/s
+      description: Swivel velocity in the advance run
+    - name: ORI2
+      data-type: REAL
+      unit: °/s
+      description: Rotational velocity in the advance run
