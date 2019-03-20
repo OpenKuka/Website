@@ -1,0 +1,84 @@
+{% import 'macros_common.j2' as common %}
+
+{# show_type #}
+{% macro show_type(enum, fence='false') %}
+{% set name = enum.name %}
+{% set description = enum.description %}
+{% set dtype = enum['data-type'] %}
+{% set values = enum['values'] %}
+
+### **{{ name }}**
+*{{ description }}*
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Name</th>
+        <th style="min-width:12em">Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ name }}</code></td>
+        <td><code>{{ dtype }}</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Value</th>
+        <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for value in values %}
+        {% set dtype = value['data-type'] %}
+        <tr>
+            <td><code>#{{ value.name }}</code></td>
+            <td>{{ value.description | markdown }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endmacro %}
+
+
+{# show_var #}
+{% macro show_var(enum, allenums, fence='false') %}
+{% set name = enum.name %}
+{% set namespace = enum.namespace %}
+{% set description = enum.description %}
+{% set dtype = enum['data-type'] %}
+{% set type = enum['type'] %}
+{% set anchor = '../' + namespace|lower + '/#' + type|lower  %}
+
+{% set enumType = allenums | selectattr('name', 'equalto', type) | first  %} 
+{% set values = enumType['values'] | map(attribute='name') | map('enum') | join(', ') %}
+
+
+### **{{ name }}**
+*{{ description }}*
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Name</th>
+        <th style="min-width:12em">Type</th>
+        <th>Constraint</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ name }}</code></td>
+        <td><code><a href="{{ anchor }}" title="ENUM of type {{ type }}">{{ type }}</a></code></td>
+        <td>{{ values | markdown }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{{ common.show_details(enum['comments'], enum['code-sample']) }}
+
+{% endmacro %}

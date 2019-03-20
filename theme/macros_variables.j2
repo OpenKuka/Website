@@ -1,0 +1,115 @@
+{% import 'macros_common.j2' as common %}
+
+{# show_scalar #}
+{% macro show_scalar(scalar, alltypes, fence='false') %}
+{% set name = scalar.name %}
+{% set namespace = scalar.namespace %}
+{% set description = scalar.description %}
+{% set dtype = scalar['data-type'] %}
+
+### **{{ name }}**
+*{{ description | markdown }}*
+
+{% if (dtype | upper == 'INT') or (dtype | upper == 'REAL')  %}
+{% set unit = scalar['unit'] %}
+{% set constraint = scalar['constraint'] %}
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Name</th>
+        <th>Type</th>
+        <th>Unit</th>
+        <th>Constraint</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ name }}</code></td>
+        <td><code>{{ dtype }}</code></td>
+        <td>{{ (unit or '') | markdown }}</td>
+        <td>{{ (constraint or '') | markdown }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% else %}
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Name</th>
+        <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ name }}</code></td>
+        <td><code>{{ dtype }}</code></td>
+        </tr>
+    </tbody>
+</table>
+
+{% endif %}
+
+
+{{ common.show_details(scalar['comments'], scalar['code-sample']) }}
+
+{% endmacro %}
+
+
+
+{# show_array #}
+{% macro show_array(array, alltypes, fence='false') %}
+{% set name = array.name %}
+{% set namespace = array.namespace %}
+{% set description = array.description %}
+{% set dtype = array['data-type'] %}
+
+### **{{ name }}**
+*{{ description | markdown }}*
+
+{% if (dtype | arraytype | upper == 'INT') or  (dtype | arraytype | upper == 'REAL')  %}
+{% set unit = array['unit'] %}
+{% set constraint = array['constraint'] %}
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Name</th>
+        <th>Type</th>
+        <th>Unit</th>
+        <th>Constraint</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ name }}</code></td>
+        <td><code>{{ dtype }}</code></td>
+        <td>{{ (unit or '') | markdown }}</td>
+        <td>{{ (constraint or '') | markdown }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% else %}
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Name</th>
+        <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ name }}</code></td>
+        <td><code>{{ dtype }}</code></td>
+        </tr>
+    </tbody>
+</table>
+
+{% endif %}
+
+
+{{ common.show_details(array['comments'], array['code-sample']) }}
+
+{% endmacro %}

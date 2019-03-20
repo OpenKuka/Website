@@ -1,0 +1,88 @@
+{% set fences = 'true' %}
+
+{# MACROS #}
+{% import 'macros_common.j2' as common %}
+{% import 'macros_enum.j2' as macros_enum %}
+{% import 'macros_struc.j2' as macros_struc %}
+{% import 'macros_variables.j2' as macros_var %}
+{% import 'macros_function.j2' as macros_func %}
+
+
+{% set ns = allnamespaces[namespace_filter] %}
+{% set ns_desc = ns['description'] %}
+{% set ns_enums = ns['enums'] %}
+{% set ns_strucs = ns['strucs'] %}
+{% set ns_variables =  ns['variables'] %}
+{% set ns_functions = ns['functions'] %}
+
+# {{ namespace_filter }}
+
+{{ ns_desc | string | markdown }}
+
+{# ENUMS #}
+{% if ns_enums != none %}
+## **Enum Types**
+{{ common.bighr() }}
+
+{% for enum in ns_enums | sort(attribute='name') %}
+{{ macros_enum.show_type(enum)|indent(0, true) }}
+{{ common.smallhr() if not loop.last }}
+{% endfor %}
+{% endif %}
+
+
+{# STRUCS #}
+{% if ns_strucs != none %}
+## **Struc Types**
+{{ common.bighr() }}
+
+{% for struc in ns_strucs | sort(attribute='name') %}
+{{ macros_struc.show_type(struc, alltypes)}}
+{{ common.smallhr() if not loop.last }}
+{% endfor %}
+{% endif %}
+
+
+{# VARIABLES #}
+{% if ns['variables'] != none %}
+## **Variables**
+{{ common.bighr() }}
+
+{% for var in ns['variables'] | sort(attribute='name') %}
+{% set name = var.name %}
+{% set description = var.description %}
+{% set dtype = var['data-type'] %}
+
+{# struc var #}
+{% if dtype|upper == 'STRUC' %}
+{{ macros_struc.show_var(var, alltypes) }}
+
+{# enum var #}
+{% elif dtype|upper == 'ENUM' %}
+{{ macros_enum.show_var(var, allenums) }}
+
+{% elif '[' in dtype %}
+{{ macros_var.show_array(var, alltypes) }}
+{% else %}
+
+{{ macros_var.show_scalar(var, alltypes) }}
+{% endif %}
+
+{{ common.smallhr()  if not loop.last }}
+{% endfor %}
+
+{% endif %}
+
+
+{# FUNCTIONS #}
+{% if ns_functions != none %}
+## **Functions**
+{{ common.bighr() }}
+
+{% for func in ns_functions | sort(attribute='name') %}
+{{ macros_func.show(func, alltypes)}}
+{{ common.smallhr()  if not loop.last }}
+{% endfor %}
+
+{% endif %}
+

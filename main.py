@@ -1,4 +1,9 @@
+import sys, os, glob
+import markdown
 import yaml
+import jinja2
+from jinja2 import Template, Environment, FileSystemLoader
+from collections import OrderedDict
 
 def declare_variables(variables, macro):
     """
@@ -8,78 +13,121 @@ def declare_variables(variables, macro):
     - macro: a decorator function, to declare a macro.
     """
 
-    variables['baz'] = "John Doe"
-    variables['peoples'] = [{"Name" : "Lionel", "Age" : 33}, {"Name" : "Blandine", "Age" : 31}]
-    variables['peoples2'] = {"Lionel" : {"Name" : "Lionel", "Age" : 33}, "Blandine" : {"Name" : "Blandine", "Age" : 31}}
-    # variables['variables'] = ["Lionel", "Blandine"]
+    keys = ['enums', 'strucs', 'variables', 'functions']
+    
+    def GetNameSpace(filepath):
+        base = os.path.basename(filepath)
+        filename = os.path.splitext(base)[0]
+        tokens = filename.split('.')
+        namespace = '.'.join(token.title() for token in tokens)
+        return namespace
 
-    # Load System.Variables 
-    stream = open("variables.yml", 'r')
-    tmpdic = {}
-    count = 1
-    for doc in yaml.load_all(stream):
-        tmpdic[doc['name']] = doc
-    variables['variables'] = tmpdic
+    def Load():
 
-    # Load System.Types
-    stream = open("types.yml", 'r')
-    tmpdic = {}
-    count = 1
-    for doc in yaml.load_all(stream):
-        if doc['data-type'] == 'ENUM':
-            doc['valueList'] = []
-            for value in doc['values']:
-                doc['valueList'].append("#" + value['name'])
-        tmpdic[doc['name']] = doc
-    variables['types'] = tmpdic
+        path = './docs/krl-ref/ref/'
+        namespaces = {}
 
-     # Load System.Functions
-    stream = open("functions.yml", 'r')
-    tmpdic = {}
-    count = 1
-    for doc in yaml.load_all(stream):
-        tmpdic[doc['name']] = doc
-    variables['functions'] = tmpdic
+        for filepath in glob.glob(os.path.join(path, '*.yml')):
+            namespace = GetNameSpace(filepath)
+            stream = open(filepath, 'r')
+            dic = yaml.load(stream)
+
+            # add namespace to each element
+            for k in keys:
+                if k in dic and dic[k] != None:
+                    for i in range(len(dic[k])):
+                        dic[k][i]['namespace'] = namespace
+
+            namespaces[namespace] = dic
+        
+        
+        variables['allnamespaces'] = namespaces
+
+        # add entries by type for cross ref
+        for k in keys:
+            k1 = "all" + k
+            variables[k1] = []
+            for namespace in namespaces:
+                if namespaces[namespace][k] != None:
+                    variables[k1].extend(namespaces[namespace][k])
+
+        # create type index
+        variables["alltypes"] = {}
+        for k in keys[0:2]:
+            for namespace in namespaces:
+                if namespaces[namespace][k] != None:
+                    for i in range(len(namespaces[namespace][k])):
+                        t = namespaces[namespace][k][i]
+                        variables["alltypes"][t['name']] = t 
+
+        
+    md = markdown.Markdown(extensions=['pymdownx.caret'])
+    
+
+    Load()
+
+    def split(txt, seps):
+        default_sep = seps[0]
+
+        # we skip seps[0] because that's the default seperator
+        for sep in seps[1:]:
+            txt = txt.replace(sep, default_sep)
+        return [i.strip() for i in txt.split(default_sep)]
+
+    def InlineMdFilter(text):
+        html = md.convert(text)
+        # strip the enclosing <p></p> tags of the converted text
+        html = html.strip()
+        n = len(html)
+        if html[0:3] == '<p>':
+            html = html[3:]
+        n = len(html)
+        if html[n-4:n] == '</p>':
+            html = html[0:n-4]
+        return html
+
+    def ArrayDimFilter(text):
+        res = split(text, ('[', ']'))
+        if len(res) > 1:
+            return res[1]
+        return ''
+
+    def ArrayTypeFilter(text):
+        res = split(text, ('[', ']'))
+        if len(res) > 1:
+            return res[0]
+        return ''
 
     @macro
-    def bar(x):
-        return (2.3 * x) + 7
+    def NamespaceToMarkdown(namespace):
+        
+        variables['namespace_filter'] = namespace
+        j2_env = Environment(loader=FileSystemLoader('./theme/'), trim_blocks=True)
+        j2_env.filters['markdown'] = lambda text: InlineMdFilter(text)
+        j2_env.filters['arraydim'] = lambda text: ArrayDimFilter(text)
+        j2_env.filters['arraytype'] = lambda text: ArrayTypeFilter(text)
+        j2_env.filters['enum'] = lambda text: "`#" + str(text) + "`" 
+        j2_tpl = j2_env.get_template('namespace.j2')
+        return j2_tpl.render(variables)
 
-    def PrintVariable(x):
-        document = """
-        name: $OV_PRO1
-        type: INT
-        description: override program
-        """
-        documents = """
-        ---
-        name: $OV_PRO
-        type: INT
-        description: override program
-        ---
-        name: $OV_PRO2
-        type: INT
-        description: override program
-        """
-        stream = open("variables.yml", 'r')
-        docs = yaml.load_all(stream)
+    @macro
+    def GetTypePath(typename):
+        if typename in variables["alltypes"]:
+            t = variables["alltypes"][typename]
+            return './' + t['namespace'].lower() + '/#' + typename
+        else:
+            return ''
 
-        output = []
-        for doc in docs:
-            output.append("\n## %s \n **type:** %s" %(doc['name'], doc['data-type']))
-            
-
-        # with  as stream:
-        #     try:
-        #         for d in :
-        #             return d
-        #     except yaml.YAMLError as exc:
-        #         print(exc)
-
-
-        return '\n'.join(output)
-    
+    @macro
+    def ListNamespaces():
+        path = './docs/krl-ref/ref/'
+        namespaces = []
+        for filepath in glob.glob(os.path.join(path, '*.yml')):
+            namespace = GetNameSpace(filepath)
+            namespaces.append(namespace)
+        return ', '.join(namespaces)
 
 
     # Give a name to each python function
-    macro(PrintVariable, 'PrintVariable')
+    # macro(ListNamespaces, 'ListNamespaces')
+    # macro(GetTypePath, 'GetTypePath')

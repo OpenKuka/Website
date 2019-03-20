@@ -2,6 +2,7 @@ site_name: OpenKuka
 site_dir: '../openkuka.github.io'
 theme:
   name: 'material'
+  custom_dir: 'theme'
   palette:
     primary: 'deep orange'
     accent: 'indigo'
@@ -14,10 +15,9 @@ plugins:
 nav:
   - Home: index.md
   - CrossComm: crosscomm.md
-  - KRL:
-    - System Variables: KRL/variables.md
-    - System Functions: KRL/functions.md
-    - System Types: KRL/types.md
+  - Language Reference:
+    - System: krl-ref/System.md
+    - System.Message: krl-ref/System.Message.md
 markdown_extensions:
   - markdown.extensions.admonition
   - markdown.extensions.codehilite:
@@ -25,11 +25,11 @@ markdown_extensions:
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret
-  - pymdownx.caret
   - pymdownx.details
   - pymdownx.smartsymbols
   - pymdownx.superfences
   - pymdownx.extra
+  - pymdownx.extrarawhtml
   - toc:
       permalink: true
 # extra_javascript:

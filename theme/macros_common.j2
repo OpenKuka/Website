@@ -1,0 +1,66 @@
+{# show_comments #}
+{% macro show_details(comments, sample) %}
+{% if comments is defined  or  sample is defined %}
+**Comments**
+
+??? note "..."
+
+{% if comments is defined and comments != none %}
+    **Notes**
+
+    {{ comments | indent(4) }}
+
+{% endif %}
+
+{% if sample is defined and sample != none %}
+    ***
+    **Code Sample**
+
+    {% if 'krl' in sample -%}
+    ```pascal tab="KRL"
+    {{ sample['krl'] |string | indent(4) }}
+    ```
+    {%- endif %}
+
+
+    {% if 'output' in sample -%}
+    ```txt tab="Output"
+    {{ sample['output'] |string | indent(4) }}
+    ```
+    {%- endif %}
+
+{% endif %}
+{% endif %}
+{% endmacro %}
+
+{# {# bighr #} #}
+{% macro get_typelink(typename, alltypes) %}
+{% if '[' in typename %} 
+    {% set elType = typename | arraytype %}
+    {% if elType in alltypes %}
+        {% set anchor = '../' + alltypes[elType].namespace|lower + '/#' + elType|lower  %}
+        <a href="{{ anchor }}" title="{{ alltypes[elType]['data-type'] }} ARRAY with elements of type {{ elType }}">{{ elType }}</a>[{{ typename | arraydim }}]
+    {% else %}
+        {{ typename }}
+    {% endif %}
+{% else %}
+    {% if typename in alltypes %}
+        {% set anchor = '../' + alltypes[typename].namespace|lower + '/#' + typename|lower  %}
+        <a href="{{ anchor }}" title="{{ alltypes[typename]['data-type'] }} of type {{ typename }}">{{ typename }}</a>
+    {% else %}
+        {{ typename }}
+    {% endif %}
+{% endif %}
+{% endmacro %}
+
+
+{# bighr #}
+{% macro bighr() %}
+<hr style ="border-bottom: .1rem solid #ff7043;">
+{% endmacro %}
+
+{# smallhr #}
+{% macro smallhr() %}
+{# <hr style ="width: 0.5em; margin:auto; border-bottom: .1rem solid #ff7043;" > #}
+{% endmacro %}
+

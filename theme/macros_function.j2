@@ -1,0 +1,64 @@
+{% import 'macros_common.j2' as common %}
+
+{# show_func #}
+{% macro show(function, alltypes, fence='false') %}
+{% set name = function.name %}
+{% set description = function.description %}
+{% set params = function.parameters %}
+{% set rtype = function['return-type'] %}
+{% set rdesc = function['return-description'] %}
+{% set comments = function.comments %}
+{% set sample = function['code-sample'] %}
+
+### **{{ name }}**
+*{{ description }}*
+
+
+**Parameters**
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Parameter</th>
+        <th style="min-width:12em">Type</th>
+        <th style="min-width:4em">Value/Ref</th>
+        <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in params %}
+        <tr>
+            <td><code>{{ p.name }}</code></td>
+            <td><code>
+                {{ common.get_typelink(p.type, alltypes) }}
+            </code></td>
+            <td><code>{{ p.pass }}</code></td>
+            <td>{{ p.description | markdown }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% if rtype is defined %}
+**Return**
+
+<table>
+    <thead>
+        <tr>
+        <th style="min-width:12em">Type</th>
+        <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><code>{{ rtype }}</code></td>
+        <td>{{ rdesc | markdown }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+
+{{ common.show_details(comments, sample) }}
+
+{% endmacro %}

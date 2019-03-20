@@ -1,0 +1,606 @@
+enums:
+  - name: ADAP_ACC
+    data-type: ENUM
+    description: Acceleration adaptation modes
+    values:
+      - name: NONE
+        description: Acceleration adaptation not activated
+      - name: STEP1
+        description: Dynamic model without kinetic energy
+      - name: STEP2
+        description: Dynamic model with kinetic energy
+  - name: PRO_MODE
+    data-type: ENUM
+    description: Program run modes
+    values:
+    - name: ISTEP
+      description: 'Incremental Step : block-by-block processing with a stop after each instruction (without `ADVANCE` run processing).'
+    - name: PSTEP
+      description: 'Program Step: complete processing of subprograms (without `ADVANCE` run processing).'
+    - name: MSTEP
+      description: 'Motion Step: step-by-step processing with a stop after each motion instruction (without `ADVANCE` run processing).'
+    - name: CSTEP
+      description: 'Continuous Step: Step-by-step processing with a stop after each motion instruction (with `ADVANCE` run processing).'
+    - name: GO
+      description: 'Continuous execution to the end of the program.'
+    - name: BSTEP
+      description: 'Back Step: Continuous execution backwards to the start of the program.'
+  - name: PRO_STATE
+    data-type: ENUM
+    description: Process states
+    values:
+      - name: P_FREE
+        description: Program not selected
+      - name: P_RESET
+        description: Program reset
+      - name: P_ACTIVE
+        description: Program active
+      - name: P_STOP
+        description: Program stopped
+      - name: P_END
+        description: End of program reached
+  - name: SW_ONOFF
+    data-type: ENUM
+    description: Generic ON/OFF switch
+    values:
+      - name: 'ON'
+        description: Switched `ON`
+      - name: 'OFF'
+        description: Switched `OFF`
+
+strucs:
+  - name: AXIS
+    data-type: STRUC
+    description: "Robot axis `A1..A6` data structure."
+    fields:
+      - name: A1
+        data-type: REAL
+      - name: A2
+        data-type: REAL
+      - name: A3
+        data-type: REAL
+      - name: A4
+        data-type: REAL
+      - name: A5
+        data-type: REAL
+      - name: A6
+        data-type: REAL
+  - name: E6AXIS
+    data-type: STRUC
+    description: Robot axis `A1..A6` and external axis `E1..E6` data structure. 
+    fields:
+      - name: A1
+        data-type: REAL
+      - name: A2
+        data-type: REAL
+      - name: A3
+        data-type: REAL
+      - name: A4
+        data-type: REAL
+      - name: A5
+        data-type: REAL
+      - name: A6
+        data-type: REAL
+      - name: E1
+        data-type: REAL
+      - name: E2
+        data-type: REAL
+      - name: E3
+        data-type: REAL
+      - name: E4
+        data-type: REAL
+      - name: E5
+        data-type: REAL
+      - name: E6
+        data-type: REAL
+  - name: FRAME
+    data-type: STRUC
+    description: Frame data structure. 
+    fields:
+      - name: X
+        data-type: REAL
+      - name: Y
+        data-type: REAL
+      - name: Z
+        data-type: REAL
+      - name: A
+        data-type: REAL
+      - name: B
+        data-type: REAL
+      - name: C
+        data-type: REAL
+  - name: E6POS
+    data-type: STRUC
+    description: Position data structure. 
+    fields:
+      - name: X
+        data-type: REAL
+      - name: Y
+        data-type: REAL
+      - name: Z
+        data-type: REAL
+      - name: A
+        data-type: REAL
+      - name: B
+        data-type: REAL
+      - name: C
+        data-type: REAL
+      - name: E1
+        data-type: REAL
+      - name: E2
+        data-type: REAL
+      - name: E3
+        data-type: REAL
+      - name: E4
+        data-type: REAL
+      - name: E5
+        data-type: REAL
+      - name: E6
+        data-type: REAL
+      - name: S
+        data-type: INT
+        description: Status
+      - name: T
+        data-type: INT
+        description: Turn
+  - name: POS
+    data-type: STRUC
+    description: Position data structure. 
+    fields:
+      - name: X
+        data-type: REAL
+      - name: Y
+        data-type: REAL
+      - name: Z
+        data-type: REAL
+      - name: A
+        data-type: REAL
+      - name: B
+        data-type: REAL
+      - name: C
+        data-type: REAL
+      - name: S
+        data-type: INT
+        description: Status
+      - name: T
+        data-type: INT
+        description: Turn
+  - name: SIGINF
+    data-type: STRUC
+    description: Signal info data structure. 
+    fields:
+      - name: Typ
+        data-type: ENUM
+        description: |
+          * `#IN` : signal is declared for inputs
+          * `#OUT` : signal is declared for outputs
+          * `#INV` : signal is not declared
+          * `#IN0` : reserved for future use
+          * `#OUT0` : signal for system outputs set to `false`
+      - name: DTyp
+        data-type: ENUM
+        description: |
+          * `#SYSI` : system signal of data type `INT` (whole number)
+          * `#SYSB` : system signal of data type `BOOL` (logic state)
+          * `#USRI` : user-defined global signal of data type `INT`
+          * `#USRB` : user-defined global signal of data type `BOOL`
+      - name: Idx
+        data-type: INT
+        constraint: '[0,4096]'
+        description: Signal number. `O` for invalid signal or signal set to `false`.
+      - name: Len
+        data-type: INT
+        constraint: '[0,32]'
+        description: Signal length. `1` for signal of type `BOOL`. `0` for invalid signal.
+  - name: SIGNAL
+    data-type: STRUC
+    description: A signal defines and alias to one or several IN/OUT
+    comments: |
+      A `SIGNAL` links predefined signal variables for inputs or outputs with a name.
+      Such a link, i.e. a `SIGNAL` declaration, is required in order to be able to address an analog input or output. 
+      An input or output may appear in several SIGNAL declarations.
+  - name: ACC_CAR
+    data-type: STRUC
+    description: Frame data structure with an additional magnitude field. 
+    fields:
+      - name: X
+        data-type: REAL
+        description: X component
+      - name: Y
+        data-type: REAL
+        description: X component
+      - name: Z
+        data-type: REAL
+        description: X component
+      - name: ABS
+        data-type: REAL
+        description: Magnitude ||X^2^ + Y^2^ + Z^2^||
+      - name: A
+        data-type: REAL
+        description: A component
+      - name: B
+        data-type: REAL
+        description: B component
+      - name: C
+        data-type: REAL
+        description: C component
+  - name: CP
+    data-type: STRUC
+    description: Speed/Acceleration data structure
+    fields:
+    - name: CP
+      data-type: REAL
+      description: linear component
+    - name: ORI1
+      data-type: REAL
+      description: Swivel component
+    - name: ORI2
+      data-type: REAL
+      description: Rotational component
+  - name: PRO_IP
+    data-type: STRUC
+    description: Process pointer data structure 
+    fields:
+    - name: I_EXECUTED
+      data-type: BOOL
+      description: "`true` if the instruction is executed. `false` otherwise."
+    - name: NAME[]
+      data-type: CHAR[32]
+      description: Name of the block in the `ADVANCE` run
+    - name: NAME_C[]
+      data-type: CHAR[32]
+      description: Name of the block in the `MAIN` run
+    - name: P_ARRIVED
+      data-type: INT
+      description: Path status for the programmed point
+    - name: P_NAME[]
+      data-type: CHAR[24]
+      description: Name or aggregate of the end or auxiliary point
+    - name: SNR
+      data-type: INT
+      description: Block number in the `ADVANCE` run
+    - name: SNR_C
+      data-type: INT
+      description: Block number in the `MAIN` run
+  
+variables:
+  - name: $A4PAR
+    data-type: INT
+    constraint : "`0` when unset. `1` when set"
+    description: Set axis 4 parallel to the last rotational main axis
+  - name: $ABS_ACCUR
+    data-type: BOOL
+    constraint : "`true` when switched `on`. `false` when switched `off`"
+    description: Switch absolutely accurate robot model on/off
+  - name: $ABS_CONVERT
+    data-type: BOOL
+    description: Conversion of point coordinates into absolutely accurate robot model
+  - name: $ABS_RELOAD
+    data-type: BOOL
+    description: Reload absolutely accurate robot model
+  - name: $ACC
+    data-type: STRUC
+    type: CP
+    description: Accelerations in the `ADVANCE` run
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        description: Path acceleration in the `ADVANCE` run
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Swivel acceleration in the `ADVANCE` run
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Rotational acceleration in the `ADVANCE` run
+  - name: $ACC_ACT_MA
+    data-type: INT
+    unit : '%'
+    constraint : '[0,100]'
+    description: Limit value of axial command acceleration
+  - name: $ACC_AXIS[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the axes `A1..A6` in the `ADVANCE` run
+  - name: $ACC_AXIS_C[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the axes `A1..A6` in the `MAIN` run
+  - name: $ACC_C
+    data-type: STRUC
+    type: CP
+    description: Accelerations in the `MAIN` run
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        constraint : \> 0
+        description: Path acceleration in the `MAIN` run
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Swivel acceleration in the `MAIN` run
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Rotational acceleration in the `MAIN` run
+  - name: $ACC_CAR_ACT
+    data-type: STRUC
+    type: ACC_CAR
+    readonly: true
+    description: The current values of the acceleration components and the total acceleration
+    comments: |
+      Acceleration due to gravity (9.81 m/s^2^) is automatically calculated into the acceleration caused by the motion.
+
+      Note that `A`, `B` and `C` fields are not used.
+    fields:
+      - name: X
+        data-type: REAL
+        unit: m/s^2^
+        description: "`X` component of the acceleration expressed in `$ACC_CAR_TOOL` frame."
+      - name: Y
+        data-type: REAL
+        unit: m/s^2^
+        description: "`Y` component of the acceleration expressed in `$ACC_CAR_TOOL` frame."
+      - name: Z
+        data-type: REAL
+        unit: m/s^2^
+        description: "`Z` component of the acceleration expressed in `$ACC_CAR_TOOL` frame."
+      - name: ABS
+        data-type: REAL
+        unit: m/s^2^
+        constraint: \>= 0
+        description: Acceleration magnitude. 
+  - name: $ACC_CAR_LIMIT
+    data-type: STRUC
+    type: ACC_CAR
+    readonly: true
+    description: Maximum permissible value for the acceleration components and the total acceleration
+    fields:
+      - name: X
+        data-type: REAL
+        unit: m/s^2^
+        description: "Maximum permissible value for the `X` component of the acceleration expressed in `$ACC_CAR_TOOL` frame."
+      - name: Y
+        data-type: REAL
+        unit: m/s^2^
+        description: "Maximum permissible value for the `Y` component of the acceleration expressed in `$ACC_CAR_TOOL` frame."
+      - name: Z
+        data-type: REAL
+        unit: m/s^2^
+        description: "Maximum permissible value for the `Z` component of the acceleration expressed in `$ACC_CAR_TOOL` frame."
+      - name: ABS
+        data-type: REAL
+        unit: m/s^2^
+        constraint: \>= 0
+        description: Maximum permissible value for the acceleration magnitude.
+    comments: |
+        If the variable `$ACC_CAR_STOP` is set to `true`, then if the acceleration value is exceeded the robot is stopped (ramp-down braking) and an acknowledgement message is generated.
+      
+        Note that `A`, `B` and `C` fields are not used.  
+  - name: $ACC_CAR_MAX
+    data-type: STRUC
+    type: ACC_CAR
+    readonly: true
+    description: Saves the greatest absolute values of `$ACC_CAR_ACT`
+    comments: |
+        This variable can be set to `0` to determine the maximum values.
+  - name: $ACC_CAR_STOP
+    data-type: BOOL
+    readonly: true
+    constraint : "`true` when stop reaction is `activated`. `false` stop reaction is `deactivated`."
+    description: Activates/Deactivates stop reaction when the value specified in `$ACC_CAR_LIMIT` is exceeded.
+  - name: $ACC_CAR_TOOL
+    data-type: STRUC
+    type: FRAME
+    readonly: true
+    description: A point on the tool mounted on the robot at which the current effective acceleration is measured
+    comments: |
+      In the same way as `$TOOL`, `$ACC_CAR_TOOL` is also specified relative to the flange by means of the `X`, `Y` and `Z` coordinates. 
+      The angles of rotation `A`, `B` and `C` indicate the positions of the 3 axes of the coordinate system in which the acceleration components are then specified. 
+      The individual acceleration components and the total acceleration are all evaluated cyclically.
+      
+      Acceleration caused by gear unit torsion or flexion of the robot is not taken into consideration. 
+  - name: $ACC_EXTAX[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the external axes `E1..E7` in the `ADVANCE` run
+  - name: $ACC_EXTAX_C[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the external axes `E1..E7` in the `MAIN` run
+  - name: $ACC_MA
+    data-type: STRUC
+    type: CP
+    description: Maximum values for path, swivel and rotational accelerations
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        description: Maximum path acceleration
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Maximum swivel acceleration
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Maximum rotational acceleration
+  - name: $ACC_OV
+    data-type: STRUC
+    type: CP
+    description: Data for acceleration with changes of override
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        description: Path acceleration with change of override
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Swivel acceleration with change of override
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Rotational acceleration with change of override
+  - name: $ACT_BASE
+    data-type: INT
+    unit: index
+    description: Number of the current BASE system
+  - name: $ACT_EX_AX
+    data-type: INT
+    unit: index
+    description: Number of the current external base kinematic system
+  - name: $ACT_TOOL
+    data-type: INT
+    unit: index
+    description: Number of the current tool coordinate system
+  - name: $ACT_VAL_DIF
+    data-type: INT
+    unit: increments
+    description: Maximum permissible difference of encoder actual values when switching on system.
+    comments: If the limit values are exceeded, the message `Perform mastering` appears.
+  - name: $ADAP_ACC
+    data-type: ENUM
+    type: ADAP_ACC
+    description: Activation of acceleration adaptation.
+    comments: "`#STEP1` and `#STEP2` require valid dynamic data (`$DYN_DAT`)."
+  - name: $ADVANCE
+    data-type: INT
+    unit: motion blocks
+    constraint: '[0,5]'
+    description: Specification of the `ADVANCE` run.
+  - name: $ALARM_STOP
+    data-type: SIGNAL
+    unit: motion blocks
+    constraint: '[0,5]'
+    description: Specification of the `ADVANCE` run.
+  - name: $ANA_DEL_FLT
+    data-type: ENUM
+    type: SW_ONOFF
+    description: Analog output filter
+  - name: $ANIN[]
+    data-type: REAL[8]
+    constraint: '[-1.0, 1.0]'
+    description: Analog inputs `$ANIN[1]..$ANIN[8]`
+    comments: |
+      * `-1.0`maps to `-10V`
+      * `+1.0`maps to `+10V`
+  - name: $ANOUT[]
+    data-type: REAL[16]
+    constraint: '[-1.0, 1.0]'
+    description: Analog outputs `$ANIN[1]..$ANIN[16]`
+    comments: |
+      * `-1.0`maps to `-10V`
+      * `+1.0`maps to `+10V`
+
+  - name: $APO_DIS_PTP[]
+    data-type: REAL[12]
+    unit: "`mm` or `°`"
+    description: Maximum approximation distance for `PTP` motions.
+    comments: |
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+
+  - name: $ASYNC_AX 
+    data-type: SIGNAL
+    description: Motion input for asynchronous external axes `E1..E6`, `negative` or `positive` direction.
+  - name: $ASYNC_AXi_M
+    data-type: SIGNAL
+    description: Motion input for asynchronous external axes `E1..E6`, `negative` direction
+    comments: |
+      * `SIGNAL $ASYNC_AX1_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX2_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX3_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX4_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX5_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX6_M $IN[1026]`
+
+  - name: $ASYNC_AXi_P
+    data-type: SIGNAL
+    description: Motion input for asynchronous external axes `E1..E6`, `positive` direction
+    comments: |
+      * `SIGNAL $ASYNC_AX1_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX2_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX3_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX4_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX5_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX6_P $IN[1026]`
+
+  - name: $OV_PRO
+    data-type: INT
+    constraint: '[0, 100]'
+    unit: '%'
+    description: Program override
+    comments: |
+      Program override is the velocity of the robot during program execution.
+
+      The program override is specified as a percentage of the programmed velocity.
+      In T1 mode, the maximum velocity is 250 mm/s, irrespective of the value that is set.
+  - name: $PRO_MODE
+    data-type: ENUM
+    type: PRO_MODE
+    description: Program run mode dependent on `$INTERPRETER`
+  - name: $PRO_MODE0
+    data-type: ENUM
+    type: PRO_MODE
+    description: Program run mode of the `SUBMIT` interpreter
+  - name: $PRO_MODE1
+    data-type: ENUM
+    type: PRO_MODE
+    description: Program run mode of the `ROBOT` interpreter
+  - name: $PRO_STATE
+    data-type: ENUM
+    type: PRO_STATE
+    description: Process state dependent on `$INTERPRETER`
+  - name: $PRO_STATE0
+    data-type: ENUM
+    type: PRO_STATE
+    description: Process state of the `SUBMIT` interpreter
+  - name: $PRO_STATE1
+    data-type: ENUM
+    type: PRO_STATE
+    description: Process state of the `ROBOT` interpreter
+  - name: $PRO_NAME[]
+    data-type: CHAR[24]
+    description: Process name dependent on `$INTERPRETER`
+  - name: $PRO_NAME0[]
+    data-type: CHAR[24]
+    description: Process name of the `SUBMIT` interpreter
+  - name: $PRO_NAME1[]
+    data-type: CHAR[24]
+    description: Process name of the `ROBOT` interpreter
+functions:
+  - name: StrCopy
+    description: Copy the contents of a string variable to another string variable.
+    parameters:
+      - name: strDest[]
+        pass: IN
+        type: CHAR[]
+        description: |
+          The character string is copied to this string variable.
+          Since `strDest[]` is an array of type `CHAR`, individual characters and constants are not permissible.
+      - name: strSource[]
+        pass: IN
+        type: CHAR[]
+        description:  The contents of this string variable are copied.
+    return-type: BOOL
+    return-description: Returns `true` if the copy was successfull. Returns `false` otherwise.
+    comments: |
+        The function `StrCopy()` can be used to copy the contents of a string variable to another string variable.
+    code-sample:
+      krl: |
+        DECL CHAR A[25], B[25]
+        DECL BOOL C
+        A[] = ""
+        B[] = "Example"
+        C   = StrCopy(A[], B[])
+      output: |
+        A[] = "Example" 
+        and C = true
