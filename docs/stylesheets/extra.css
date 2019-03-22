@@ -1,0 +1,10 @@
+.tippy-tooltip.dark-theme {
+    /* Your styling here. Example: */
+    /* border-radius: 3px; 
+    background: var(--mdc-theme-dark-dark); 
+    color: var(--mdc-theme-lite); 
+    padding: .75rem;  */
+    font-size: 1.0em; 
+    /* text-align: left;
+    color: var(--mdc-theme-lite);  */
+  }

@@ -14,7 +14,6 @@ plugins:
   - macros
 nav:
   - Home: index.md
-  - CrossComm: crosscomm.md
   - Language Reference:
     - System: krl-ref/System.md
     - System.Message: krl-ref/System.Message.md
@@ -32,5 +31,13 @@ markdown_extensions:
   - pymdownx.extrarawhtml
   - toc:
       permalink: true
-# extra_javascript:
-#   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
+
+extra_css:
+  - 'stylesheets/extra.css'
+
+extra_javascript:
+  # - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
+  # - 'https://unpkg.com/popper.js@1/dist/umd/popper.min.js'
+  # - 'https://unpkg.com/tippy.js@4'
+  # - 'javascripts/extra.js'
+

@@ -40,9 +40,7 @@
         {% set dtype = field['data-type'] %}
         <tr>
             <td><code>{{ field.name }}</code></td>
-            <td>
-                <code>{{ common.get_typelink(dtype, alltypes) }}</code>
-            </td>
+            <td><code>{{ common.get_typelink(dtype, alltypes) }}</code></td>
             <td>{{ (field.description or '') | markdown }}</td>
         </tr>
         {% endfor %}
@@ -93,8 +91,8 @@
         </tr>
     </thead>
     <tbody>
-{% for field in fields %}
-{% set dtype = field['data-type'] %}
+        {% for field in fields %}
+        {% set dtype = field['data-type'] %}
         <tr>
             <td><code>{{ field.name }}</code></td>
             <td><code>{{ dtype }}</code></td>
@@ -102,7 +100,7 @@
             <td>{{ (field.constraint or '') | markdown }}</td>
             <td>{{ (field.description or '') | markdown }}</td>
         </tr>
-{% endfor %}
+        {% endfor %}
     </tbody>
 </table>
 {% endif %}

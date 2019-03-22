@@ -47,17 +47,15 @@
 
 
 {# show_var #}
-{% macro show_var(enum, allenums, fence='false') %}
+{% macro show_var(enum, alltypes, fence='false') %}
 {% set name = enum.name %}
 {% set namespace = enum.namespace %}
 {% set description = enum.description %}
 {% set dtype = enum['data-type'] %}
 {% set type = enum['type'] %}
-{% set anchor = '../' + namespace|lower + '/#' + type|lower  %}
 
-{% set enumType = allenums | selectattr('name', 'equalto', type) | first  %} 
-{% set values = enumType['values'] | map(attribute='name') | map('enum') | join(', ') %}
 
+{% set values = alltypes[type]['values'] | map(attribute='name') | map('enum') | join(', ') %}
 
 ### **{{ name }}**
 *{{ description }}*
@@ -73,12 +71,18 @@
     <tbody>
         <tr>
         <td><code>{{ name }}</code></td>
-        <td><code><a href="{{ anchor }}" title="ENUM of type {{ type }}">{{ type }}</a></code></td>
-        <td>{{ values | markdown }}</td>
+        <td><code>{{ common.get_typelink(type, alltypes) }}</code></td>
+        <td>{{ show_enumlist(alltypes[type]) }} </td>
         </tr>
     </tbody>
 </table>
 
 {{ common.show_details(enum['comments'], enum['code-sample']) }}
 
+{% endmacro %}
+
+{% macro show_enumlist(enum) %}
+    {%- for value in enum['values'] -%}
+        <span class="tippy" data-tippy-content="{{ value['description'] | markdown }}" title="#{{ value['name'] | upper }} : {{ value['description'] }}"><code>#{{ value['name'] | upper }}</code></span>{{ ' ,'  if not loop.last }}
+    {%- endfor -%}
 {% endmacro %}

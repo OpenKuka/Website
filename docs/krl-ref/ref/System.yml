@@ -499,7 +499,6 @@ variables:
     comments: |
       * `-1.0`maps to `-10V`
       * `+1.0`maps to `+10V`
-
   - name: $APO_DIS_PTP[]
     data-type: REAL[12]
     unit: "`mm` or `°`"
@@ -507,7 +506,6 @@ variables:
     comments: |
       * `1..6` : axis `A1..A6`
       * `7..12` : external axis `E1..E6`
-
   - name: $ASYNC_AX 
     data-type: SIGNAL
     description: Motion input for asynchronous external axes `E1..E6`, `negative` or `positive` direction.
@@ -521,7 +519,6 @@ variables:
       * `SIGNAL $ASYNC_AX4_M $IN[1026]`
       * `SIGNAL $ASYNC_AX5_M $IN[1026]`
       * `SIGNAL $ASYNC_AX6_M $IN[1026]`
-
   - name: $ASYNC_AXi_P
     data-type: SIGNAL
     description: Motion input for asynchronous external axes `E1..E6`, `positive` direction

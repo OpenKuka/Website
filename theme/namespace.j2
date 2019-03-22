@@ -15,7 +15,8 @@
 {% set ns_variables =  ns['variables'] %}
 {% set ns_functions = ns['functions'] %}
 
-# {{ namespace_filter }}
+<h1 class="tippy" data-tippy-content="Another Tooltip" >{{ namespace_filter }}</h1>
+
 
 {{ ns_desc | string | markdown }}
 
@@ -59,7 +60,7 @@
 
 {# enum var #}
 {% elif dtype|upper == 'ENUM' %}
-{{ macros_enum.show_var(var, allenums) }}
+{{ macros_enum.show_var(var, alltypes) }}
 
 {% elif '[' in dtype %}
 {{ macros_var.show_array(var, alltypes) }}
@@ -86,3 +87,15 @@
 
 {% endif %}
 
+
+<!-- Very end of the body -->
+<script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@4"></script>
+<script>
+    tippy('.tippy', {
+        arrow: true,
+        arrowType: 'sharp', // or 'sharp' (default)
+        size: 'small', // "small",  "regular", "large"
+        interactive: true,
+    })
+</script>

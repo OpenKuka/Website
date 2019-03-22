@@ -98,6 +98,12 @@ def declare_variables(variables, macro):
             return res[0]
         return ''
 
+    def EnumListFilter(values):
+        html = []
+        for value in values:
+            html.append("<span title='Mytitle'><code>" + "#" + str(value['name']) + "</code></span>")
+        return ', '.join(html)
+
     @macro
     def NamespaceToMarkdown(namespace):
         
@@ -106,6 +112,7 @@ def declare_variables(variables, macro):
         j2_env.filters['markdown'] = lambda text: InlineMdFilter(text)
         j2_env.filters['arraydim'] = lambda text: ArrayDimFilter(text)
         j2_env.filters['arraytype'] = lambda text: ArrayTypeFilter(text)
+        j2_env.filters['enumlist'] = lambda values: EnumListFilter(values)
         j2_env.filters['enum'] = lambda text: "`#" + str(text) + "`" 
         j2_tpl = j2_env.get_template('namespace.j2')
         return j2_tpl.render(variables)
