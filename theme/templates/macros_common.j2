@@ -8,7 +8,7 @@
 {% if comments is defined and comments != none %}
     **Notes**
 
-    {{ comments | indent(4) }}
+    {{ comments | markdown | indent(4) }}
 
 {% endif %}
 

@@ -434,8 +434,222 @@ variables:
     constraint: '[1,8]'
     description: Definition of axis-specific workspace monitoring
 
+  - name: $BASE
+    data-type: STRUC
+    type: FRAME
+    description: Base coordinate system in relation to the world coordinate system in the `ADVANCE` run.
+    comments: |
+      Offset and rotation of the base coordinate system in relation to the world coordinate system in the `ADVANCE` run.
+  - name: $BASE_C
+    data-type: STRUC
+    type: FRAME
+    description: Base coordinate system in relation to the world coordinate system in the `MAIN` run
+    comments: |
+      Offset and rotation of the base coordinate system in relation to the world coordinate system in the `MAIN` run.
+  - name: $BASE_KIN[]
+    data-type: CHAR[29]
+    description: External kinematic / axes in base
+  - name: $BOUNCE_TIME
+    data-type: INT
+    unit: ms
+    description: Bounce time for EMT signals
+    comments: |
+      The signal is only accepted if it remains stable over the entire time period defined in `$BOUNCE_TIME`.
+  - name: $BRAKE_SIG
+    data-type: INT
+    constraint: '{0,1}'
+    description: Bit array for axis `A1..A6` and external axis `E1..E6` brakes
+    comments: |
+      * `0` : brake closed
+      * `1`: brake open
+  - name: $BRK_DEL_COM
+    data-type: INT
+    unit: ms
+    description: Time after which the axis brakes are closed on completion of positioning during jogging
+  - name: $BRK_DEL_EX
+    data-type: INT
+    unit: ms
+    description: Brake delay time for external axes
+  - name: $BRK_DEL_PRO
+    data-type: INT
+    unit: ms
+    description: Time after which the axis brakes are closed on completion of posi- tioning in the program
+  - name: $BRK_MAX_TM
+    data-type: INT
+    unit: ms
+    description: Maximum deceleration time for path-maintaining Emergency Stop
+  - name: $BRK_MODE
+    data-type: INT
+    unit: bit array
+    constraint: "'Bbbbb'"
+    description: Brake control mode
+    comments: |
+      The bits are counted from right to left :
+
+        * `Bit 0` : axes `A1..A6` close (`b = 1`) / do not close (`b = 0`) at command end.
+        * `Bit 1` : axes `A1..A6` close individually (`b = 1`) / together (`b = 0`).
+        * `Bit 2` : axes `A1..A6` close (`b = 1`) / do not close (`b = 0`) during pauses in the motion.
+        * `Bit 3` : external axes `E1..E6` brakes close individually (`b = 1`) / together (`b = 0`) with axes `A1..A6` during motion pauses.
+  - name: $BRK_OPENTM
+    data-type: INT
+    unit: ms
+    description: Time delay of command value output after axis brakes have been opened
+  - name: $BUS_PAR
+    data-type: STRUC
+    type: BUS
+    description: L2 bus interface (KRC32)
 
 
+  - name: $CABLE2_MON
+    data-type: BOOL
+    description: Additional motor cable monitoring
+    comments: |
+      Specifies whether the connection of the second motor cable should be monitored (`true` for special machines) :
+
+        * `true` : monitoring activated
+        * `false` : monitoring deactivated
+  - name: $CAL_DIFF
+    data-type: INT
+    description: Mastering difference for EMT mastering with check run
+  - name: $CALP
+    data-type: STRUC
+    type: E6AXIS
+    description: Reference point offset between mathematical zero point and encoder zero point
+  - name: $CIRC_TYPE
+    data-type: ENUM
+    type: CIRC_TYPE
+    description: Orientation control with CIRC blocks in the `ADVANCE` run
+  - name: $CIRC_TYPE_C
+    data-type: ENUM
+    type: CIRC_TYPE
+    description: Orientation control with CIRC blocks in the `MAIN` run
+  - name: $CMD
+    data-type: INT
+    description: Display assignment number (handle) for command channel
+  - name: $COM_NAME
+    data-type: CHAR[486]
+    description: Command which is to be processed after next start
+  - name: $COM_VAL_MI[]
+    data-type: REAL[12]
+    description: Limitation of command speed for axis `A1..A6` and external axis `E1..E6`
+    comments: |
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $CONF_MESS
+    data-type: SIGNAL
+    description: Signal declaration for `reset acknowledgement messages`.
+    comments: |
+      External confirmation
+  - name: $COSYS
+    data-type: ENUM
+    type: COSYS
+    description: Coordinate system for jogging
+  - name: $COUNT_I[]
+    data-type: INT[32]
+    description: Freely usable integer variables
+    comments: Used as counters in the VW package
+  - name: $COUP_COMP[,]
+    data-type: STRUC 
+    type: FRA[6,6]
+    description: Axis coupling factors
+  - name: $CP_VEL_TYPE
+    data-type: ENUM
+    type: COSYS
+    description: Reduction of the CP path velocity
+    comments: |
+      If the axis limit values are exceeded, the CP velocity is reduced. 
+      Reduction is always active in Cartesian jogging.
+  - name: $CP_VEL_TYPE
+    data-type: ENUM
+    type: CP_VEL_TYPE
+    description: Reduction of the CP path velocity
+    comments: |
+      If the axis limit values are exceeded, the CP velocity is reduced. 
+      Reduction is always active in Cartesian jogging.
+  - name: $CPVELREDMELD
+    data-type: INT
+    description: Generation of message if path velocity reduced
+    comments: |
+      The message contains the point name and the maximum reduction in the specific motion command.
+
+      * `0` : Generation of message deactivated.
+      * `1` : Generation of message in the event of block change in jog mode.
+      * `100` : Generation of message in the event of block change in all modes.
+  - name: $CURR_ACT[]
+    data-type: REAL[12]
+    unit: '%'
+    constraint: '[-100,100]'
+    description: Actual current of axes
+    comments: |
+      Current value of current of axes `A1..A6` and external axes `E1..E6` in percentage of maximum servo drive module current `$CURR_MAX` (-100% to +100%).
+  
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $CURR_CAL[]
+    data-type: REAL[12]
+    description: Current calibration of axis in the power module
+    comments: |
+      For KRC `1a` and KRC `2` : `calibration = 1`.
+
+      * `1` : High power
+      * `2` : Medium / low power
+      * `4` : Low power
+
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $CURR_COM_EX[]
+    data-type: REAL[6]
+    description: Current limitation for external axes in jog mode
+    comments: |
+      * `1..6` : external axis `E1..E6`
+  - name: $CURR_LIM[]
+    data-type: INT[12]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Current limitation
+    comments: |
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $CURR_MAX[]
+    data-type: REAL[12]
+    unit: 'A'
+    description: Maximum effective current on power module output
+    comments: |
+      Effective current must be present
+      
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $CURR_MON[]
+    data-type: REAL[12]
+    description: Permissible rated current
+    comments: |
+      Defines the limit for `i^2^ x t` monitoring for `55°C`
+      
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $CURR_RED[,]
+    data-type: REAL[12,2]
+    description: Current limitation for axes in `%` of the maximum current
+    comments: |
+
+      * `[1..6,:]` : axis `A1..A6`
+      * `[7..12,:]` : external axis `E1..E6`
+
+      * `[:,1]` : positive limit
+      * `[:,2]` : negative limit
+  - name: $CYC_DEFi[]
+    data-type: CHAR[470]
+    description: Input text for the corresponding cyclical flag
+    comments: |
+      * i in `[1,32]`
+  - name: $CYCFLAG[]
+    data-type: BOOL[32]
+    description: Cyclical flags
+    comments: |
+      There are 32 cyclical flags available.
+      These flags are cyclically updated independently of program execution. 
+      The default value is `false`.
+  
   - name: $OV_PRO
     data-type: INT
     constraint: '[0, 100]'

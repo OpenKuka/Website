@@ -9,7 +9,6 @@ enums:
         description: Dynamic model without kinetic energy
       - name: STEP2
         description: Dynamic model with kinetic energy
-
   - name: ASYNC_STATE
     data-type: ENUM
     description: Asynchronous motion states
@@ -46,6 +45,36 @@ enums:
         description: The output is set and the robot stopped if the TCP is located inside the work envelope
       - name: OUTSIDE_STOP
         description: The output is set and the robot stopped if the TCP is located outside the work envelope
+ 
+  - name: CIRC_TYPE
+    data-type: ENUM
+    description: Orientation control modes for CIRC blocks
+    values:
+      - name: BASE
+        description: Space-related orientation control
+      - name: PATH
+        description: Path-related orientation control
+  - name: COSYS
+    data-type: ENUM
+    description: Orientation control modes for CIRC blocks
+    values:
+      - name: AX
+        description: Motions are relative to the axis-specific coordinate system
+      - name: CAR
+        description: Motions are relative to the Cartesian coordinate system.
+  - name: CP_VEL_TYPE
+    data-type: ENUM
+    description: Reduction modes for CP path velocity
+    values:
+      - name: CONSTANT
+        description: No reduction
+      - name: VAR_T1
+        description: Reduction in jog mode SStep(T1)
+      - name: VAR_ALL
+        description: Reduction in all modes
+ 
+
+
   - name: PRO_MODE
     data-type: ENUM
     description: Program run modes
@@ -185,6 +214,40 @@ strucs:
         data-type: REAL
       - name: A6
         data-type: REAL
+  
+  - name: BUS
+    data-type: STRUC
+    description: L2 bus interface data structure.
+    fields:
+      - name: PROTO
+        data-type: INT
+      - name: PROC
+        data-type: INT
+      - name: RCO
+        data-type: INT
+      - name: BL
+        data-type: INT
+      - name: PT
+        data-type: INT
+      - name: TS
+        data-type: INT
+      - name: BAUD
+        data-type: INT
+      - name: TSL
+        data-type: INT
+      - name: MIN_TDSR
+        data-type: INT
+      - name: MAX_TDSR
+        data-type: INT
+      - name: TTR
+        data-type: INT
+      - name: HSA
+        data-type: INT
+      - name: G
+        data-type: INT
+      - name: DFLT_SAP
+        data-type: INT
+
   - name: E6AXIS
     data-type: STRUC
     description: Robot axis `A1..A6` and external axis `E1..E6` data structure. 
@@ -213,6 +276,19 @@ strucs:
         data-type: REAL
       - name: E6
         data-type: REAL
+  
+
+  - name: FRA
+    data-type: STRUC
+    description: Fraction data structure. 
+    fields:
+      - name: N
+        data-type: INT
+        description: numerator
+      - name: D
+        data-type: INT
+        description: denominator
+  
   - name: FRAME
     data-type: STRUC
     description: Frame data structure. 
