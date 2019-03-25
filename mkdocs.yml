@@ -1,5 +1,11 @@
 site_name: OpenKuka
 site_dir: '../openkuka.github.io'
+site_description: 'Community documentation for the Kuka Robot Language'
+site_author: Lionel du Peloux
+
+google_analytics:
+  - 'UA-136856150-1'
+  - 'auto'
 theme:
   name: 'material'
   custom_dir: 'theme'
@@ -12,15 +18,31 @@ theme:
 plugins:
   - search
   - macros
+
+repo_name: 'OpenKuka/Website'
+repo_url: 'https://github.com/OpenKuka/Website'
+
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/openkuka'
+  
 nav:
-  - Home: index.md
+  - OpenKuka:
+    - Home: index.md
+    - Contributing: contributing.md
+    - Author's notes: authors.md
   - Language Reference:
-    - System: krl-ref/System.md
-    - System.Message: krl-ref/System.Message.md
+    - System.Types: krl/reference/system.types.md
+    - System.Variables: krl/reference/system.variables.md
+    - System.Functions: krl/reference/system.functions.md
+    - System.Messages: krl/reference/system.messages.md
+
 markdown_extensions:
   - markdown.extensions.admonition
   - markdown.extensions.codehilite:
       linenums: true
+  - attr_list
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret

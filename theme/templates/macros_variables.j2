@@ -1,13 +1,13 @@
-{% import 'macros_common.j2' as common %}
+{% import 'macros_common.j2' as common with context %}
 
 {# show_scalar #}
-{% macro show_scalar(scalar, alltypes, fence='false') %}
+{% macro show_scalar(scalar) %}
 {% set name = scalar.name %}
 {% set namespace = scalar.namespace %}
 {% set description = scalar.description %}
 {% set dtype = scalar['data-type'] %}
 
-### **{{ name }}**
+{{ common.show_node_title(name) }}
 *{{ description | markdown }}*
 
 {% if (dtype | upper == 'INT') or (dtype | upper == 'REAL')  %}
@@ -59,13 +59,13 @@
 
 
 {# show_array #}
-{% macro show_array(array, alltypes, fence='false') %}
+{% macro show_array(array) %}
 {% set name = array.name %}
 {% set namespace = array.namespace %}
 {% set description = array.description %}
 {% set dtype = array['data-type'] %}
 
-### **{{ name }}**
+{{ common.show_node_title(name) }}
 *{{ description | markdown }}*
 
 {% if (dtype | arraytype | upper == 'INT') or  (dtype | arraytype | upper == 'REAL')  %}

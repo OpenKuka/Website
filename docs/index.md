@@ -1,23 +1,31 @@
 # Welcome to OpenKuka
 
-This website is a **community** effort to offers **meaningful documentation** for KUKA robots.
+## Better Kuka Robot Language documentation
 
-*While KUKA robots are powerful, the docs they provide to their customers is generally crappy and opaque.*
+This website is a **community** effort to provide better documentation for the Kuka Robot Language (KRL).
+Its goal is to become a shared tool for robot developers (industrial, researcher, student, ...).
 
-## Getting Started
+## Quick start
 
-For now have a taste by looking at the language ref section :
+Go to the [language reference](./krl/reference/system.types/) section to get started.
+Or hit the `s` or `f` key on your keyboard to search for a `KRL` entry.
 
-* [System.Variables](http://127.0.0.1:8000/krl-ref/System/)
-* [System.Messages](http://127.0.0.1:8000/krl-ref/System.Message/)
+## What to expect
 
-## Collaborate
+* full language reference documentation in a modern html layout with powerful search capabilities and cross referencing
+* additional resources (how to, tutorials, ...)
+* discover undocumented functionalities (crosscomm plugin, message database, ...)
+* easy to contribute
 
-Comments, suggestions and contributions are really welcome. Please feel free to open [issues](https://github.com/OpenKuka/Website/issues) on the [github repo](https://github.com/OpenKuka/Website) if you whish to collaborate.
+## Contributing
 
-!!! info
-    Language Reference doc is based on set of simple [`YAML` files](https://github.com/OpenKuka/Website/tree/master/docs/krl-ref/ref) describing `types`, `variables` and `functions`.
-    The data is passed to the site generator through a [small python script](https://github.com/OpenKuka/Website/blob/master/main.py) and shaped thanks to [jinja2 templates](https://github.com/OpenKuka/Website/tree/master/theme).
+All types of contributions are more than welcome.
 
-    Anyone should be able to write/enrich the `YAML` files describing the KRL language. Documentation on this topic coming soon ...
+The language reference documentation is written in simple `YAML` files. 
+A side each item (type, variable or function) you will find a small *pencil icon* that will redirect you to the corresponding definition lines in the yaml file.
+This way, it should be easy for anybody to propose corrections and enrichments of the existing documentation.
+
+Please, read the [guidelines](./contributing.md) if you are decided to collaborate.
+
+
 

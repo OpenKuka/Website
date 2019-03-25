@@ -1,0 +1,481 @@
+variables:
+  - name: $A4PAR
+    data-type: INT
+    constraint : "`0` when unset. `1` when set"
+    description: Set axis 4 parallel to the last rotational main axis
+  - name: $ABS_ACCUR
+    data-type: BOOL
+    constraint : "`true` when switched `on`. `false` when switched `off`"
+    description: Switch absolutely accurate robot model on/off
+  - name: $ABS_CONVERT
+    data-type: BOOL
+    description: Conversion of point coordinates into absolutely accurate robot model
+  - name: $ABS_RELOAD
+    data-type: BOOL
+    description: Reload absolutely accurate robot model
+  - name: $ACC
+    data-type: STRUC
+    type: CP
+    description: Accelerations in the `ADVANCE` run
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        description: Path acceleration in the `ADVANCE` run
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Swivel acceleration in the `ADVANCE` run
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Rotational acceleration in the `ADVANCE` run
+  - name: $ACC_ACT_MA
+    data-type: INT
+    unit : '%'
+    constraint : '[0,100]'
+    description: Limit value of axial command acceleration
+  - name: $ACC_AXIS[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the axes `A1..A6` in the `ADVANCE` run
+  - name: $ACC_AXIS_C[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the axes `A1..A6` in the `MAIN` run
+  - name: $ACC_C
+    data-type: STRUC
+    type: CP
+    description: Accelerations in the `MAIN` run
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        constraint : \> 0
+        description: Path acceleration in the `MAIN` run
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Swivel acceleration in the `MAIN` run
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Rotational acceleration in the `MAIN` run
+  - name: $ACC_CAR_ACT
+    data-type: STRUC
+    type: ACC_CAR
+    readonly: true
+    description: The current values of the acceleration components and the total acceleration
+    comments: |
+      Acceleration due to gravity (9.81 m/s^2^) is automatically calculated into the acceleration caused by the motion.
+
+      Note that `A`, `B` and `C` fields are not used.
+    fields:
+      - name: X
+        data-type: REAL
+        unit: m/s^2^
+        description: "`X` component of the acceleration expressed in `<xref:$ACC_CAR_TOOL>` frame."
+      - name: Y
+        data-type: REAL
+        unit: m/s^2^
+        description: "`Y` component of the acceleration expressed in `<xref:$ACC_CAR_TOOL>` frame."
+      - name: Z
+        data-type: REAL
+        unit: m/s^2^
+        description: "`Z` component of the acceleration expressed in `<xref:$ACC_CAR_TOOL>` frame."
+      - name: ABS
+        data-type: REAL
+        unit: m/s^2^
+        constraint: \>= 0
+        description: Acceleration magnitude. 
+  - name: $ACC_CAR_LIMIT
+    data-type: STRUC
+    type: ACC_CAR
+    readonly: true
+    description: Maximum permissible value for the acceleration components and the total acceleration
+    fields:
+      - name: X
+        data-type: REAL
+        unit: m/s^2^
+        description: "Maximum permissible value for the `X` component of the acceleration expressed in `<xref:$ACC_CAR_TOOL>` frame."
+      - name: Y
+        data-type: REAL
+        unit: m/s^2^
+        description: "Maximum permissible value for the `Y` component of the acceleration expressed in `<xref:$ACC_CAR_TOOL>` frame."
+      - name: Z
+        data-type: REAL
+        unit: m/s^2^
+        description: "Maximum permissible value for the `Z` component of the acceleration expressed in `<xref:$ACC_CAR_TOOL>` frame."
+      - name: ABS
+        data-type: REAL
+        unit: m/s^2^
+        constraint: \>= 0
+        description: Maximum permissible value for the acceleration magnitude.
+    comments: |
+        If the variable `<xref:$ACC_CAR_STOP>` is set to `true`, then if the acceleration value is exceeded the robot is stopped (ramp-down braking) and an acknowledgement message is generated.
+      
+        Note that `A`, `B` and `C` fields are not used.  
+  - name: $ACC_CAR_MAX
+    data-type: STRUC
+    type: ACC_CAR
+    readonly: true
+    description: Saves the greatest absolute values of `<xref:$ACC_CAR_ACT>`
+    comments: |
+        This variable can be set to `0` to determine the maximum values.
+  - name: $ACC_CAR_STOP
+    data-type: BOOL
+    readonly: true
+    constraint : "`true` when stop reaction is `activated`. `false` stop reaction is `deactivated`."
+    description: Activates/Deactivates stop reaction when the value specified in `<xref:$ACC_CAR_LIMIT>` is exceeded.
+  - name: $ACC_CAR_TOOL
+    data-type: STRUC
+    type: FRAME
+    readonly: true
+    description: A point on the tool mounted on the robot at which the current effective acceleration is measured
+    comments: |
+      In the same way as `<xref:$TOOL>`, `<xref:$ACC_CAR_TOOL>` is also specified relative to the flange by means of the `X`, `Y` and `Z` coordinates. 
+      The angles of rotation `A`, `B` and `C` indicate the positions of the 3 axes of the coordinate system in which the acceleration components are then specified. 
+      The individual acceleration components and the total acceleration are all evaluated cyclically.
+      
+      Acceleration caused by gear unit torsion or flexion of the robot is not taken into consideration. 
+  - name: $ACC_EXTAX[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the external axes `E1..E7` in the `ADVANCE` run
+  - name: $ACC_EXTAX_C[]
+    data-type: INT[6]
+    unit: '%'
+    constraint: '[0,100]'
+    description: Acceleration of the external axes `E1..E7` in the `MAIN` run
+  - name: $ACC_MA
+    data-type: STRUC
+    type: CP
+    description: Maximum values for path, swivel and rotational accelerations
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        description: Maximum path acceleration
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Maximum swivel acceleration
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Maximum rotational acceleration
+  - name: $ACC_OV
+    data-type: STRUC
+    type: CP
+    description: Data for acceleration with changes of override
+    fields:
+      - name: CP
+        data-type: REAL
+        unit: m/s^2^
+        description: Path acceleration with change of override
+      - name: ORI1
+        data-type: REAL
+        unit: °/s^2^
+        description: Swivel acceleration with change of override
+      - name: ORI2
+        data-type: REAL
+        unit: °/s^2^
+        description: Rotational acceleration with change of override
+  - name: $ACT_BASE
+    data-type: INT
+    unit: index
+    description: Number of the current BASE system
+  - name: $ACT_EX_AX
+    data-type: INT
+    unit: index
+    description: Number of the current external base kinematic system
+  - name: $ACT_TOOL
+    data-type: INT
+    unit: index
+    description: Number of the current tool coordinate system
+  - name: $ACT_VAL_DIF
+    data-type: INT
+    unit: increments
+    description: Maximum permissible difference of encoder actual values when switching on system.
+    comments: If the limit values are exceeded, the message `Perform mastering` appears.
+  - name: $ADAP_ACC
+    data-type: ENUM
+    type: ADAP_ACC
+    description: Activation of acceleration adaptation.
+    comments: "`#STEP1` and `#STEP2` require valid dynamic data (`<xref:$DYN_DAT>`)."
+  - name: $ADVANCE
+    data-type: INT
+    unit: motion blocks
+    constraint: '[0,5]'
+    description: Specification of the `ADVANCE` run.
+  - name: $ALARM_STOP
+    data-type: SIGNAL
+    unit: motion blocks
+    constraint: '[0,5]'
+    description: Specification of the `ADVANCE` run.
+  - name: $ANA_DEL_FLT
+    data-type: ENUM
+    type: SW_ONOFF
+    description: Analog output filter
+  - name: $ANIN[]
+    data-type: REAL[8]
+    constraint: '[-1.0, 1.0]'
+    description: Analog inputs `$ANIN[1]..$ANIN[8]`
+    comments: |
+      * `-1.0`maps to `-10V`
+      * `+1.0`maps to `+10V`
+  - name: $ANOUT[]
+    data-type: REAL[16]
+    constraint: '[-1.0, 1.0]'
+    description: Analog outputs `$ANIN[1]..$ANIN[16]`
+    comments: |
+      * `-1.0`maps to `-10V`
+      * `+1.0`maps to `+10V`
+  - name: $APO_DIS_PTP[]
+    data-type: REAL[12]
+    unit: "`mm` or `°`"
+    description: Maximum approximation distance for `PTP` motions.
+    comments: |
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+  - name: $ASYNC_AX 
+    data-type: SIGNAL
+    description: Motion input for asynchronous external axes `E1..E6`, `negative` or `positive` direction.
+  - name: $ASYNC_AXi_M
+    data-type: SIGNAL
+    description: Motion input for asynchronous external axes `E1..E6`, `negative` direction
+    comments: |
+      * `SIGNAL $ASYNC_AX1_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX2_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX3_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX4_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX5_M $IN[1026]`
+      * `SIGNAL $ASYNC_AX6_M $IN[1026]`
+  - name: $ASYNC_AXi_P
+    data-type: SIGNAL
+    description: Motion input for asynchronous external axes `E1..E6`, `positive` direction
+    comments: |
+      * `SIGNAL $ASYNC_AX1_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX2_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX3_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX4_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX5_P $IN[1026]`
+      * `SIGNAL $ASYNC_AX6_P $IN[1026]`
+  - name: $ASYNC_AXIS
+    data-type: INT
+    constraint: | 
+      * Bit = `0` (synchronous mode)
+      * Bit = `1` (asynchronous mode)
+    description: Bit arrays to switch external axes to asynchronous mode
+    comments: |
+      When `<xref:$ASYNC_AXIS>` is assigned in a KRL program, the newly-defined asynchronous axes are valid from this position until a new assignment is made.
+
+      When `$ASYNC_AXIS` is defined, the `ADVANCE` run will be stopped if the value of `$ASYNC_AXIS` changes. 
+      Before a new value of `$ASYNC_AXIS` is saved, the system will wait until all synchronous motions (through advance run stop) and all asynchronous motions have been completed, and all axes are in position. 
+      Thus the instruction `$ASYNC_AXIS = ...` can be used – along with the system variable `<xref:$ASYNC_STATE>` – to synchronize in time synchronous and asynchronous motions.
+      `$ASYNC_AXIS` can only be modified in the KRL program, and not in the interrupt or in the `SUBMIT` interpreter.
+
+      The bits correspond to the external axes in ascending order : 
+      
+        * Bit 0 : external axis 1,
+        * Bit 1 : external axis 2,
+        * ...
+      
+      If the bit is set, the external axis will be switched to asynchronous mode; if it is reset, the external axis will be switched back to synchronous mode.
+  - name: $ASYNC_FLT
+    data-type: INT
+    unit: ms
+    constraint: '[0,16]'
+    description: Filter for asynchronous external axes
+    comments: |
+      The value of `<xref:$ASYNC_FLT>` is the filter length in milliseconds for all asynchronously coordinated motions. It corresponds to the system variable `FILTER` for synchronous motions.
+  - name: $ASYNC_MODE
+    data-type: INT
+    unit: ms
+    constraint: '[0,16]'
+    description: Mode for asynchronous external axes
+    comments: |
+      In the machine data of the controller, the bit mask `<xref:$ASYNC_MODE>` can be used to set various asynchronous motion execution modes.
+      
+      It is not possible to change modes while the robot controller is running. The modes can be combined in any way desired.
+      
+      Certain modes must be set in order to use special applications.
+      In the standard setting (default mode) no `$ASYNC_MODE` bits are set. 
+      Only bit `0` is used at this time :
+
+        * Bit 0 = 0 : default mode
+        * Bit 0 = 1 (1st bit) : mode 1
+        * Bit 1 = (2nd bit) : mode 2 block selection response
+  - name: $ASYNC_OPT
+    data-type: BOOL
+    description: Option flag for *asynchronous axes are possible*
+    comments: |
+      * `true` : asynchronous axes possible
+      * `false` : asynchronous axes not possible
+  - name: $ASYNC_STATE
+    data-type: ENUM
+    type: ASYNC_STATE
+    readonly: true
+    description: Current asynchronous motion execution state
+    comments: |
+      `<xref:$ASYNC_STATE>` can be used to check the current asynchronous motion execution state.
+
+      Asynchronous and *normal* robot motions can be synchronized using this variable.   
+  - name: $ASYNC_T1_FAST
+    data-type: INT
+    constraint: '[0,1]'
+    description: Control of the velocity reduction factor in `Test 1` mode
+    comments: |
+      * `0` : activated
+      * `1` : deactivated
+  - name: $ASYS
+    data-type: ENUM
+    type: ASYS
+    description: Assignment of the jog keys
+  - name: $AUT
+    data-type: SIGNAL
+    description: Signal declaration `Automatic` mode
+  - name: $AUX_POWER
+    data-type: SIGNAL
+    description: Signal declaration for external power supply
+    comments: |
+      If `<xref:$AUX_POWER>` has the value `true`, the external power supply is active; if the value is `false`, the external power supply is not active.
+  - name: $AXIS_ACT
+    data-type: STRUC
+    type: E6AXIS
+    description: Current axis-specific robot position
+  - name: $AXIS_ACTMOD
+    data-type: STRUC
+    type: E6AXIS
+    description: Display of axis angle modulo 180°
+  - name: $AXIS_BACK
+    data-type: STRUC
+    type: E6AXIS
+    description: Start position of the current motion block, axis-specific
+  - name: $AXIS_CAL
+    data-type: STRUC
+    type: AXIS_CAL
+    description: Display whether axis is referenced
+    comments: "`true` when axis is referenced. `false` otherwise."
+  - name: $AXIS_DIR[]
+    data-type: INT[12]
+    constraint: '{-1; 1}'
+    description: Direction of rotation for axis `A1..A6` and external axis `E1..E6`
+    comments: |
+      * `1..6` : axis `A1..A6`
+      * `7..12` : external axis `E1..E6`
+
+      `1` for positive direction. `-1` for negative direction.
+  - name: $AXIS_FOR
+    data-type: STRUC
+    type: E6AXIS
+    description: Target position of the current motion block, axis-specific
+  - name: $AXIS_HOME[]
+    data-type: STRUC
+    type: E6AXIS[5]
+    description: Definition of the various home positions
+  - name: $AXIS_INC
+    data-type: STRUC
+    type: AXIS_INC
+    unit: increment
+    description: Incremental actual values of the axes
+    comments: Indication of the axis position in increments.
+  - name: $AXIS_INT
+    data-type: STRUC
+    type: E6AXIS
+    description: Robot position at the time of an interrupt
+  - name: $AXIS_JUS
+    data-type: STRUC
+    type: AXIS_CAL
+    description: Display whether axis is mastered
+    comments: "`true` when axis is mastered. `false` otherwise."
+  - name: $AXIS_RESO[]
+    data-type: INT[12]
+    unit : increments / revolution
+    description: Resolution of the position sensing system
+    comments: |
+      Number of pulses per revolution of the encoder:
+
+        * `1..6` : axis `A1..A6`
+        * `7..12` : external axis `E1..E6`   
+  - name: $AXIS_RET
+    data-type: STRUC
+    type: E6AXIS
+    description: Axis positions when leaving the programmed path, axis-specific
+  - name: $AXIS_SEQ[]
+    data-type: INT[12]
+    description: Change in sequence of axis ... to axis ...
+    comments: |
+        * `1..6` : axis `A1..A6`
+        * `7..12` : external axis `E1..E6`
+  - name: $AXIS_TYPE[]
+    data-type: INT[12]
+    constraint: '[1,5]'
+    description: Axis type identification
+    comments: |
+      Types :
+
+        * `1` : Linear
+        * `2` : Spindle
+        * `3` : Rotational
+        * `4` : Finitely rotating
+        * `5` : Infinitely rotating
+
+      Index :
+
+        * `1..6` : axis `A1..A6`
+        * `7..12` : external axis `E1..E6`
+  - name: $AXWORKSPACE[]
+    data-type: STRUC
+    type: AXBOX[8]
+    constraint: '[1,8]'
+    description: Definition of axis-specific workspace monitoring
+
+
+
+  - name: $OV_PRO
+    data-type: INT
+    constraint: '[0, 100]'
+    unit: '%'
+    description: Program override
+    comments: |
+      Program override is the velocity of the robot during program execution.
+
+      The program override is specified as a percentage of the programmed velocity.
+      In T1 mode, the maximum velocity is 250 mm/s, irrespective of the value that is set.
+  - name: $PRO_MODE
+    data-type: ENUM
+    type: PRO_MODE
+    description: Program run mode dependent on `<xref:$INTERPRETER>`
+  - name: $PRO_MODE0
+    data-type: ENUM
+    type: PRO_MODE
+    description: Program run mode of the `SUBMIT` interpreter
+  - name: $PRO_MODE1
+    data-type: ENUM
+    type: PRO_MODE
+    description: Program run mode of the `ROBOT` interpreter
+  - name: $PRO_STATE
+    data-type: ENUM
+    type: PRO_STATE
+    description: Process state dependent on `<xref:$INTERPRETER>`
+  - name: $PRO_STATE0
+    data-type: ENUM
+    type: PRO_STATE
+    description: Process state of the `SUBMIT` interpreter
+  - name: $PRO_STATE1
+    data-type: ENUM
+    type: PRO_STATE
+    description: Process state of the `ROBOT` interpreter
+  - name: $PRO_NAME[]
+    data-type: CHAR[24]
+    description: Process name dependent on `<xref:$INTERPRETER>`
+  - name: $PRO_NAME0[]
+    data-type: CHAR[24]
+    description: Process name of the `SUBMIT` interpreter
+  - name: $PRO_NAME1[]
+    data-type: CHAR[24]
+    description: Process name of the `ROBOT` interpreter

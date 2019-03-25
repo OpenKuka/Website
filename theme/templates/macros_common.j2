@@ -1,0 +1,75 @@
+{# show_comments #}
+{% macro show_details(comments, sample) %}
+{% if comments is defined  or  sample is defined %}
+**Comments**
+
+??? note "..."
+
+{% if comments is defined and comments != none %}
+    **Notes**
+
+    {{ comments | indent(4) }}
+
+{% endif %}
+
+{% if sample is defined and sample != none %}
+    ***
+    **Code Sample**
+
+    {% if 'krl' in sample -%}
+    ```pascal tab="KRL"
+    {{ sample['krl'] |string | indent(4) }}
+    ```
+    {%- endif %}
+
+
+    {% if 'output' in sample -%}
+    ```txt tab="Output"
+    {{ sample['output'] |string | indent(4) }}
+    ```
+    {%- endif %}
+
+{% endif %}
+{% endif %}
+{% endmacro %}
+
+{# get_typelink #}
+{% macro get_typelink(typename) %}
+{% if '[' in typename %} 
+    {% set elType = typename | arraytype %}
+    {% if elType in xref %}
+        {% set anchor = '../' + xref[elType].path + '/#' + elType|lower  %}
+        <a href="{{ anchor }}" class="tippy" title="{{ alltypes[elType]['data-type'] }} ARRAY with elements of type {{ elType }}">{{ elType }}</a>[{{ typename | arraydim }}]
+    {% else %}
+        {{ typename }}
+    {% endif %}
+{% else %}
+    {% if typename in xref %}
+        {% set anchor = '../' + xref[typename].path + '/#' + typename|lower  %}
+        <a href="{{ anchor }}" class="tippy" title="{{ alltypes[typename]['data-type'] }} of type {{ typename }}">{{ typename }}</a>
+    {% else %}
+        {{ typename }}
+    {% endif %}
+{% endif %}
+{% endmacro %}
+
+
+{# 
+    show_section_title
+#}
+{% macro show_section_title(name) %}
+## {{ name }} {: class=krl krl-section }
+<hr class="krl krl-section">
+{% endmacro %}
+
+{#
+    show_node_title
+#}
+{% macro show_node_title(name) -%}
+{% set node = xref[name] %}    
+{% set url = "https://github.com/OpenKuka/openkuka.github.io/blob/master/krl/reference/yaml/" + node['path'] + ".yml#L" + node['line-start']|string + "-L" + node['line-end']|string %}
+{% set txt = "Edit this item on Github" %}
+<div><a href="{{ url }}" title="{{ txt }}" class="krl-edit-icon md-icon tippy"></a></div>
+### {{ name }} {: class=krl krl-node }
+<hr class="krl krl-node">
+{% endmacro %}

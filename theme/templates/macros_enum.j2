@@ -1,14 +1,14 @@
-{% import 'macros_common.j2' as common %}
+{% import 'macros_common.j2' as common with context %}
 
 {# show_type #}
-{% macro show_type(enum, fence='false') %}
+{% macro show_type(enum) %}
 {% set name = enum.name %}
 {% set description = enum.description %}
 {% set dtype = enum['data-type'] %}
 {% set values = enum['values'] %}
 
-### **{{ name }}**
-*{{ description }}*
+{{ common.show_node_title(name) }}
+*{{ description | markdown }}*
 
 <table>
     <thead>
@@ -47,18 +47,15 @@
 
 
 {# show_var #}
-{% macro show_var(enum, alltypes, fence='false') %}
+{% macro show_var(enum) %}
 {% set name = enum.name %}
 {% set namespace = enum.namespace %}
 {% set description = enum.description %}
 {% set dtype = enum['data-type'] %}
 {% set type = enum['type'] %}
 
-
-{% set values = alltypes[type]['values'] | map(attribute='name') | map('enum') | join(', ') %}
-
-### **{{ name }}**
-*{{ description }}*
+{{ common.show_node_title(name) }}
+*{{ description | markdown }}*
 
 <table>
     <thead>
@@ -71,8 +68,8 @@
     <tbody>
         <tr>
         <td><code>{{ name }}</code></td>
-        <td><code>{{ common.get_typelink(type, alltypes) }}</code></td>
-        <td>{{ show_enumlist(alltypes[type]) }} </td>
+        <td><code>{{ common.get_typelink(type) }}</code></td>
+        <td>{{ show_enumlist(type) }} </td>
         </tr>
     </tbody>
 </table>
@@ -81,8 +78,9 @@
 
 {% endmacro %}
 
-{% macro show_enumlist(enum) %}
-    {%- for value in enum['values'] -%}
+{% macro show_enumlist(type) %}
+    {% set node = xref[type]['value'] %}
+    {%- for value in node['values'] -%}
         <span class="tippy" data-tippy-content="{{ value['description'] | markdown }}" title="#{{ value['name'] | upper }} : {{ value['description'] }}"><code>#{{ value['name'] | upper }}</code></span>{{ ' ,'  if not loop.last }}
     {%- endfor -%}
 {% endmacro %}

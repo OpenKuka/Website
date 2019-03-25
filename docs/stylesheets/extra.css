@@ -1,3 +1,37 @@
+h2.krl {
+  font-weight: bold;
+  color: #ff7043;
+  text-transform: uppercase;
+}
+h3.krl {
+  font-weight: bold;
+}
+hr.krl-section {
+  border-bottom-style: solid;
+  border-bottom-width: .2rem;
+  /* border-bottom-color:  #ff7043; */
+  margin: 1em 0
+}
+hr.krl-node {
+  display: none;
+  width: 0.5em; 
+  margin:auto; 
+  border-bottom: 0rem solid #ff7043;
+}
+/* md-icon md-content__icon krl krl-node tippy */
+
+.krl-edit-icon {
+  /* display: inline-block; */
+  position: relative;
+  margin: 1rem 0;
+  padding: 0;
+  float: right;
+  font-size: 1.2em;
+  color: black;
+}
+
+
+
 .tippy-tooltip.dark-theme {
     /* Your styling here. Example: */
     /* border-radius: 3px; 
@@ -7,4 +41,4 @@
     font-size: 1.0em; 
     /* text-align: left;
     color: var(--mdc-theme-lite);  */
-  }
+}

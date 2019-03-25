@@ -1,0 +1,28 @@
+functions:
+  - name: StrCopy
+    description: Copy the contents of a string variable to another string variable.
+    parameters:
+      - name: strDest[]
+        pass: IN
+        type: CHAR[]
+        description: |
+          The character string is copied to this string variable.
+          Since `strDest[]` is an array of type `CHAR`, individual characters and constants are not permissible.
+      - name: strSource[]
+        pass: IN
+        type: CHAR[]
+        description:  The contents of this string variable are copied.
+    return-type: BOOL
+    return-description: Returns `true` if the copy was successfull. Returns `false` otherwise.
+    comments: |
+        The function `StrCopy()` can be used to copy the contents of a string variable to another string variable.
+    code-sample:
+      krl: |
+        DECL CHAR A[25], B[25]
+        DECL BOOL C
+        A[] = ""
+        B[] = "Example"
+        C   = StrCopy(A[], B[])
+      output: |
+        A[] = "Example" 
+        and C = true

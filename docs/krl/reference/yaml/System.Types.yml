@@ -1,0 +1,384 @@
+enums:
+  - name: ADAP_ACC
+    data-type: ENUM
+    description: Acceleration adaptation modes
+    values:
+      - name: NONE
+        description: Acceleration adaptation not activated
+      - name: STEP1
+        description: Dynamic model without kinetic energy
+      - name: STEP2
+        description: Dynamic model with kinetic energy
+
+  - name: ASYNC_STATE
+    data-type: ENUM
+    description: Asynchronous motion states
+    values:
+      - name: BUSY
+        description: Asynchronous motions active, stopped or temporarily stored.
+      - name: IDLE
+        description: No asynchronous motions active or stopped (queue is empty); last motion terminated without an interrupt.
+      - name: CANCELLED
+        description: No asynchronous motions active or stopped (queue is empty); last motion was canceled.
+      - name: PEND
+        description: Asynchronous motion is planned, but is not currently being executed
+  - name: ASYS
+    data-type: ENUM
+    description: 
+    values:
+      - name: ROBOT
+        description: Robot axes `A1..A6`
+      - name: EXTAX
+        description: External axes `E1..E6`
+      - name: EXTAX2
+        description: External kinematic system
+  - name: AXWMODE
+    data-type: ENUM
+    description: Functional principles for axis-specific workspace monitoring
+    values:
+      - name: 'OFF'
+        description: Work envelope monitoring deactivated
+      - name: INSIDE
+        description: The output is set if the TCP is located inside the work envelope
+      - name: OUTSIDE
+        description: The output is set if the TCP is located outside the work envelope
+      - name: INSIDE_STOP
+        description: The output is set and the robot stopped if the TCP is located inside the work envelope
+      - name: OUTSIDE_STOP
+        description: The output is set and the robot stopped if the TCP is located outside the work envelope
+  - name: PRO_MODE
+    data-type: ENUM
+    description: Program run modes
+    values:
+    - name: ISTEP
+      description: 'Incremental Step : block-by-block processing with a stop after each instruction (without `ADVANCE` run processing).'
+    - name: PSTEP
+      description: 'Program Step: complete processing of subprograms (without `ADVANCE` run processing).'
+    - name: MSTEP
+      description: 'Motion Step: step-by-step processing with a stop after each motion instruction (without `ADVANCE` run processing).'
+    - name: CSTEP
+      description: 'Continuous Step: Step-by-step processing with a stop after each motion instruction (with `ADVANCE` run processing).'
+    - name: GO
+      description: 'Continuous execution to the end of the program.'
+    - name: BSTEP
+      description: 'Back Step: Continuous execution backwards to the start of the program.'
+  - name: PRO_STATE
+    data-type: ENUM
+    description: Process states
+    values:
+      - name: P_FREE
+        description: Program not selected
+      - name: P_RESET
+        description: Program reset
+      - name: P_ACTIVE
+        description: Program active
+      - name: P_STOP
+        description: Program stopped
+      - name: P_END
+        description: End of program reached
+  - name: SW_ONOFF
+    data-type: ENUM
+    description: Generic ON/OFF switch
+    values:
+      - name: 'ON'
+        description: Switched `ON`
+      - name: 'OFF'
+        description: Switched `OFF`
+
+strucs:
+
+  - name: AXBOX
+    data-type: STRUC
+    description: Axis-specific state data structure
+    fields:
+      - name: Mode
+        data-type: ENUM
+        type: AXWMODE
+        description: Functional principle of the axis-specific workspace monitoring function
+      - name: State
+        data-type: BOOL
+        description: Violation of the axis-specific workspace
+      - name: Name[]
+        data-type: CHAR[24]
+        description: Name of the particular axis-specific workspace
+  - name: AXIS_CAL
+    data-type: STRUC
+    description: Axis-specific state data structure
+    fields:
+      - name: A1
+        data-type: BOOL
+      - name: A2
+        data-type: BOOL
+      - name: A3
+        data-type: BOOL
+      - name: A4
+        data-type: BOOL
+      - name: A5
+        data-type: BOOL
+      - name: A6
+        data-type: BOOL
+      - name: E1
+        data-type: BOOL
+      - name: E2
+        data-type: BOOL
+      - name: E3
+        data-type: BOOL
+      - name: E4
+        data-type: BOOL
+      - name: E5
+        data-type: BOOL
+      - name: E6
+        data-type: BOOL
+  - name: AXIS_INC
+    data-type: STRUC
+    description: Axis-specific increments data structure
+    fields:
+      - name: A1
+        data-type: INT
+        constraint: '>= 0'
+      - name: A2
+        data-type: INT
+        constraint: '>= 0'
+      - name: A3
+        data-type: INT
+        constraint: '>= 0'
+      - name: A4
+        data-type: INT
+        constraint: '>= 0'
+      - name: A5
+        data-type: INT
+        constraint: '>= 0'
+      - name: A6
+        data-type: INT
+        constraint: '>= 0'
+      - name: E1
+        data-type: INT
+        constraint: '>= 0'
+      - name: E2
+        data-type: INT
+        constraint: '>= 0'
+      - name: E3
+        data-type: INT
+        constraint: '>= 0'
+      - name: E4
+        data-type: INT
+        constraint: '>= 0'
+      - name: E5
+        data-type: INT
+        constraint: '>= 0'
+      - name: E6
+        data-type: INT
+        constraint: '>= 0'
+  - name: AXIS
+    data-type: STRUC
+    description: "Robot axis `A1..A6` data structure."
+    fields:
+      - name: A1
+        data-type: REAL
+      - name: A2
+        data-type: REAL
+      - name: A3
+        data-type: REAL
+      - name: A4
+        data-type: REAL
+      - name: A5
+        data-type: REAL
+      - name: A6
+        data-type: REAL
+  - name: E6AXIS
+    data-type: STRUC
+    description: Robot axis `A1..A6` and external axis `E1..E6` data structure. 
+    fields:
+      - name: A1
+        data-type: REAL
+      - name: A2
+        data-type: REAL
+      - name: A3
+        data-type: REAL
+      - name: A4
+        data-type: REAL
+      - name: A5
+        data-type: REAL
+      - name: A6
+        data-type: REAL
+      - name: E1
+        data-type: REAL
+      - name: E2
+        data-type: REAL
+      - name: E3
+        data-type: REAL
+      - name: E4
+        data-type: REAL
+      - name: E5
+        data-type: REAL
+      - name: E6
+        data-type: REAL
+  - name: FRAME
+    data-type: STRUC
+    description: Frame data structure. 
+    fields:
+      - name: X
+        data-type: REAL
+      - name: Y
+        data-type: REAL
+      - name: Z
+        data-type: REAL
+      - name: A
+        data-type: REAL
+      - name: B
+        data-type: REAL
+      - name: C
+        data-type: REAL
+  - name: E6POS
+    data-type: STRUC
+    description: Position data structure. 
+    fields:
+      - name: X
+        data-type: REAL
+      - name: Y
+        data-type: REAL
+      - name: Z
+        data-type: REAL
+      - name: A
+        data-type: REAL
+      - name: B
+        data-type: REAL
+      - name: C
+        data-type: REAL
+      - name: E1
+        data-type: REAL
+      - name: E2
+        data-type: REAL
+      - name: E3
+        data-type: REAL
+      - name: E4
+        data-type: REAL
+      - name: E5
+        data-type: REAL
+      - name: E6
+        data-type: REAL
+      - name: S
+        data-type: INT
+        description: Status
+      - name: T
+        data-type: INT
+        description: Turn
+  - name: POS
+    data-type: STRUC
+    description: Position data structure. 
+    fields:
+      - name: X
+        data-type: REAL
+      - name: Y
+        data-type: REAL
+      - name: Z
+        data-type: REAL
+      - name: A
+        data-type: REAL
+      - name: B
+        data-type: REAL
+      - name: C
+        data-type: REAL
+      - name: S
+        data-type: INT
+        description: Status
+      - name: T
+        data-type: INT
+        description: Turn
+  - name: SIGINF
+    data-type: STRUC
+    description: Signal info data structure. 
+    fields:
+      - name: Typ
+        data-type: ENUM
+        description: |
+          * `#IN` : signal is declared for inputs
+          * `#OUT` : signal is declared for outputs
+          * `#INV` : signal is not declared
+          * `#IN0` : reserved for future use
+          * `#OUT0` : signal for system outputs set to `false`
+      - name: DTyp
+        data-type: ENUM
+        description: |
+          * `#SYSI` : system signal of data type `INT` (whole number)
+          * `#SYSB` : system signal of data type `BOOL` (logic state)
+          * `#USRI` : user-defined global signal of data type `INT`
+          * `#USRB` : user-defined global signal of data type `BOOL`
+      - name: Idx
+        data-type: INT
+        constraint: '[0,4096]'
+        description: Signal number. `O` for invalid signal or signal set to `false`.
+      - name: Len
+        data-type: INT
+        constraint: '[0,32]'
+        description: Signal length. `1` for signal of type `BOOL`. `0` for invalid signal.
+  - name: SIGNAL
+    data-type: STRUC
+    description: A signal defines and alias to one or several IN/OUT
+    comments: |
+      A `SIGNAL` links predefined signal variables for inputs or outputs with a name.
+      Such a link, i.e. a `SIGNAL` declaration, is required in order to be able to address an analog input or output. 
+      An input or output may appear in several SIGNAL declarations.
+  - name: ACC_CAR
+    data-type: STRUC
+    description: Frame data structure with an additional magnitude field. 
+    fields:
+      - name: X
+        data-type: REAL
+        description: X component
+      - name: Y
+        data-type: REAL
+        description: X component
+      - name: Z
+        data-type: REAL
+        description: X component
+      - name: ABS
+        data-type: REAL
+        description: Magnitude ||X^2^ + Y^2^ + Z^2^||
+      - name: A
+        data-type: REAL
+        description: A component
+      - name: B
+        data-type: REAL
+        description: B component
+      - name: C
+        data-type: REAL
+        description: C component
+  - name: CP
+    data-type: STRUC
+    description: Speed/Acceleration data structure
+    fields:
+    - name: CP
+      data-type: REAL
+      description: linear component
+    - name: ORI1
+      data-type: REAL
+      description: Swivel component
+    - name: ORI2
+      data-type: REAL
+      description: Rotational component
+  - name: PRO_IP
+    data-type: STRUC
+    description: Process pointer data structure 
+    fields:
+    - name: I_EXECUTED
+      data-type: BOOL
+      description: "`true` if the instruction is executed. `false` otherwise."
+    - name: NAME[]
+      data-type: CHAR[32]
+      description: Name of the block in the `ADVANCE` run
+    - name: NAME_C[]
+      data-type: CHAR[32]
+      description: Name of the block in the `MAIN` run
+    - name: P_ARRIVED
+      data-type: INT
+      description: Path status for the programmed point
+    - name: P_NAME[]
+      data-type: CHAR[24]
+      description: Name or aggregate of the end or auxiliary point
+    - name: SNR
+      data-type: INT
+      description: Block number in the `ADVANCE` run
+    - name: SNR_C
+      data-type: INT
+      description: Block number in the `MAIN` run

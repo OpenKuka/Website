@@ -1,0 +1,116 @@
+{% set fences = 'true' %}
+
+{# MACROS #}
+{% import 'macros_common.j2' as common with context %}
+{% import 'macros_enum.j2' as macros_enum with context%}
+{% import 'macros_struc.j2' as macros_struc with context%}
+{% import 'macros_variables.j2' as macros_var with context%}
+{% import 'macros_function.j2' as macros_func with context%}
+
+{% set ns = allnamespaces[namespace_filter] %}
+{% set ns_desc = ns['description'] %}
+{% set ns_enums = ns['enums'] %}
+{% set ns_strucs = ns['strucs'] %}
+{% set ns_variables =  ns['variables'] %}
+{% set ns_functions = ns['functions'] %}
+
+# {{ namespace_filter }} {: class=krl krl-namespace }
+
+{{ ns_desc | string | markdown }}
+
+{# ENUMS #}
+{% if ns_enums is defined and ns_enums != none%}
+{{ common.show_section_title('Enum Types') }}
+
+{% for enum in ns_enums | sort(attribute='name') %}
+{{ macros_enum.show_type(enum)|indent(0, true) }}
+{% endfor %}
+{% endif %}
+
+
+{# STRUCS #}
+{% if ns_strucs is defined and ns_strucs != none%}
+{{ common.show_section_title('Struc Types') }}
+
+{% for struc in ns_strucs | sort(attribute='name') %}
+{{ macros_struc.show_type(struc)}}
+{% endfor %}
+{% endif %}
+
+
+{# VARIABLES #}
+{% if ns_variables is defined and ns_variables != none%}
+{{ common.show_section_title('Variables') }}
+
+{% for var in ns['variables'] | sort(attribute='name') %}
+{% set name = var.name %}
+{% set description = var.description %}
+{% set dtype = var['data-type'] %}
+
+{# struc var #}
+{% if dtype|upper == 'STRUC' %}
+{{ macros_struc.show_var(var) }}
+
+{# enum var #}
+{% elif dtype|upper == 'ENUM' %}
+{{ macros_enum.show_var(var) }}
+
+{% elif '[' in dtype %}
+{{ macros_var.show_array(var) }}
+{% else %}
+
+{{ macros_var.show_scalar(var) }}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+
+{# FUNCTIONS #}
+{% if ns_functions is defined and ns_functions != none%}
+{{ common.show_section_title('Functions') }}
+
+{% for func in ns_functions | sort(attribute='name') %}
+{{ macros_func.show(func)}}
+
+{% endfor %}
+
+{% endif %}
+
+
+<!-- Very end of the body -->
+<script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@4"></script>
+<script>
+        function withTitleAttributeContent(tippy) {
+    return (targets, options = {}) => tippy(targets, {
+        ...options,
+        content(reference) {
+        if (options.content) {
+            return options.content
+        }
+        const title = reference.getAttribute('title')
+        reference.removeAttribute('title')
+        return title
+        }
+    })
+    }
+
+    window.tippy = withTitleAttributeContent(tippy)
+
+    tippy('.tippy', {
+        placement: 'top',
+        arrow: true,
+        arrowType: 'sharp', // or 'sharp' (default)
+        size: 'small', // "small",  "regular", "large"
+        interactive: true,
+    })
+    tippy('.tippy-toc', {
+        placement: 'top',
+        arrow: true,
+        arrowType: 'sharp', // or 'sharp' (default)
+        size: 'small', // "small",  "regular", "large"
+        interactive: true,
+    })
+    
+</script>

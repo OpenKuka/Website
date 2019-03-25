@@ -1,7 +1,7 @@
-{% import 'macros_common.j2' as common %}
+{% import 'macros_common.j2' as common with context %}
 
 {# show_func #}
-{% macro show(function, alltypes, fence='false') %}
+{% macro show(function) %}
 {% set name = function.name %}
 {% set description = function.description %}
 {% set params = function.parameters %}
@@ -10,9 +10,8 @@
 {% set comments = function.comments %}
 {% set sample = function['code-sample'] %}
 
-### **{{ name }}**
-*{{ description }}*
-
+{{ common.show_node_title(name) }}
+*{{ description | markdown }}*
 
 **Parameters**
 
@@ -30,7 +29,7 @@
         <tr>
             <td><code>{{ p.name }}</code></td>
             <td><code>
-                {{ common.get_typelink(p.type, alltypes) }}
+                {{ common.get_typelink(p.type) }}
             </code></td>
             <td><code>{{ p.pass }}</code></td>
             <td>{{ p.description | markdown }}</td>

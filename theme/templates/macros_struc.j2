@@ -1,14 +1,14 @@
-{% import 'macros_common.j2' as common %}
+{% import 'macros_common.j2' as common with context %}
 
 {# show_type #}
-{% macro show_type(struc, alltypes, fence='false') %}
+{% macro show_type(struc) %}
 {% set name = struc.name %}
 {% set description = struc.description %}
 {% set dtype = struc['data-type'] %}
 {% set type = struc['type'] %}
 {% set fields = struc['fields'] %}
 
-### **{{ name }}**
+{{ common.show_node_title(name) }}
 *{{ description | markdown }}*
 
 <table>
@@ -37,10 +37,18 @@
     </thead>
     <tbody>
         {% for field in fields %}
+            
         {% set dtype = field['data-type'] %}
+        {% if dtype|upper == 'STRUCT' or dtype|upper == 'ENUM' %}
+            {% set typename = field['type'] %}
+        {% else %}
+            {% set typename = field['data-type'] %}
+        {% endif %}
+        
+        {% set type = field['type'] %}
         <tr>
             <td><code>{{ field.name }}</code></td>
-            <td><code>{{ common.get_typelink(dtype, alltypes) }}</code></td>
+            <td><code>{{ common.get_typelink(typename) }}</code></td>
             <td>{{ (field.description or '') | markdown }}</td>
         </tr>
         {% endfor %}
@@ -54,15 +62,15 @@
 
 
 {# show_var #}
-{% macro show_var(struc, alltypes, fence='false') %}
+{% macro show_var(struc) %}
 {% set name = struc.name %}
 {% set description = struc.description %}
 {% set dtype = struc['data-type'] %}
 {% set type = struc['type'] %}
 {% set fields = struc['fields'] %}
 
-### **{{ name }}**
-*{{ description }}*
+{{ common.show_node_title(name) }}
+*{{ description | markdown }}*
 
 <table>
     <thead>
@@ -74,7 +82,7 @@
     <tbody>
         <tr>
         <td><code>{{ name }}</code></th>
-        <td><code>{{ common.get_typelink(type, alltypes) }}</code></th>
+        <td><code>{{ common.get_typelink(type) }}</code></th>
         </tr>
     </tbody>
 </table>
@@ -93,9 +101,14 @@
     <tbody>
         {% for field in fields %}
         {% set dtype = field['data-type'] %}
+        {% if dtype|upper == 'STRUCT' or dtype|upper == 'ENUM' %}
+            {% set typename = field['type'] %}
+        {% else %}
+            {% set typename = field['data-type'] %}
+        {% endif %}
         <tr>
             <td><code>{{ field.name }}</code></td>
-            <td><code>{{ dtype }}</code></td>
+            <td><code>{{ common.get_typelink(typename) }}</code></td>
             <td>{{ (field.unit or '') | markdown }}</td>
             <td>{{ (field.constraint or '') | markdown }}</td>
             <td>{{ (field.description or '') | markdown }}</td>
