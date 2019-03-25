@@ -127,7 +127,7 @@ def declare_variables(variables, macro):
             key = match.group(1)
             if key in variables["xref"]:
                 node = variables["xref"][key]
-                path = "../" + node['path'] + "/#" + key.lower().strip('$')
+                path = "../" + node['path'].lower() + "/#" + key.lower().strip('$')
                 return '<a href="' + path + '" class="krl tippy" title="' + node['value']['description'] +'">' + str(key) + '</a>'
             else:
                 return key

@@ -38,14 +38,14 @@
 {% if '[' in typename %} 
     {% set elType = typename | arraytype %}
     {% if elType in xref %}
-        {% set anchor = '../' + xref[elType].path + '/#' + elType|lower  %}
+        {% set anchor = '../' + xref[elType].path|lower + '/#' + elType|lower  %}
         <a href="{{ anchor }}" class="tippy" title="{{ alltypes[elType]['data-type'] }} ARRAY with elements of type {{ elType }}">{{ elType }}</a>[{{ typename | arraydim }}]
     {% else %}
         {{ typename }}
     {% endif %}
 {% else %}
     {% if typename in xref %}
-        {% set anchor = '../' + xref[typename].path + '/#' + typename|lower  %}
+        {% set anchor = '../' + xref[typename].path|lower + '/#' + typename|lower  %}
         <a href="{{ anchor }}" class="tippy" title="{{ alltypes[typename]['data-type'] }} of type {{ typename }}">{{ typename }}</a>
     {% else %}
         {{ typename }}
